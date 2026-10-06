@@ -15,7 +15,7 @@
 .journey-chapter { position:absolute; width:320px; margin-left:-160px; opacity:.46; transition:opacity .45s; }
 .journey-chapter.is-current { opacity:1; }
 .journey-chapter-above { bottom:calc(50% + 51px); }
-.journey-chapter-below { top:calc(50% + 50px); }
+.journey-chapter-below { top:calc(50% + 80px); }
 .journey-chapter-copy { position:relative; }
 .journey-chapter-label { display:flex; align-items:center; justify-content:space-between; gap:12px; color:#e4c488; font-size:9px; letter-spacing:.9px; text-transform:uppercase; }
 .journey-chapter-label time { white-space:nowrap; }
@@ -100,6 +100,28 @@
   .contact-footer>span { width:100%; order:3; margin-top:15px; }
   .contact-footer button:last-child { margin-left:auto; }
 }
-@media(max-height:730px) and (min-width:760px) { .journey-heading { top:122px; } .sky-app .journey-heading h1 { font-size:34px; } .journey-panorama { inset:208px 0 85px; } .journey-chapter { width:310px; margin-left:-155px; } .sky-app .journey-chapter h2 { font-size:23px; margin:9px 0; } .sky-app .journey-chapter p { font-size:12px; line-height:1.5; } .journey-chapter small { margin-top:9px; padding-top:7px; font-size:9px; } .journey-controls { bottom:12px; padding-top:10px; } }
-@media(max-height:740px) and (max-width:759px) { .journey-heading { top:109px; } .sky-app .journey-heading h1 { font-size:28px; } .journey-panorama { inset:198px 0 143px; } .journey-path-marker { top:calc(29% - 1px); } .journey-bridge-track { top:calc(29% - 60px); } .journey-chapter-above,.journey-chapter-below { top:calc(29% + 53px); } .sky-app .journey-chapter h2 { font-size:23px; margin:10px 0; } .sky-app .journey-chapter p { font-size:12px; line-height:1.6; } .journey-chapter small { margin-top:10px; font-size:9px; } .sky-app.sky-inside.sky-journey-active .sky-guardian-world .sky-realm-guardian { width:175px; } }
+@media(max-height:800px) and (min-width:760px) {
+  .journey-heading { top:122px; }
+  .sky-app .journey-heading h1 { font-size:34px; }
+  .journey-panorama { inset:208px 0 85px; }
+  .journey-chapter { width:310px; margin-left:-155px; }
+  .journey-chapter-below { width:350px; margin-left:-175px; }
+  .sky-app .journey-chapter h2 { font-size:23px; margin:9px 0; }
+  .sky-app .journey-chapter p { font-size:12px; line-height:1.5; }
+  .journey-chapter small { margin-top:9px; padding-top:7px; font-size:9px; }
+  .journey-chapter-below small { margin-top:6px; padding-top:5px; }
+  .journey-controls { bottom:12px; padding-top:10px; }
+}
+@media(max-height:740px) and (max-width:759px) {
+  .journey-heading { top:109px; }
+  .sky-app .journey-heading h1 { font-size:28px; }
+  .journey-panorama { inset:198px 0 149px; }
+  .journey-path-marker { top:calc(29% - 1px); }
+  .journey-bridge-track { top:calc(29% - 60px); }
+  .journey-chapter-above,.journey-chapter-below { top:calc(29% + 80px); }
+  .sky-app .journey-chapter h2 { font-size:23px; margin:5px 0; }
+  .sky-app .journey-chapter p { font-size:12px; line-height:1.45; }
+  .journey-chapter small { margin-top:6px; padding-top:5px; font-size:9px; }
+  .sky-app.sky-inside.sky-journey-active .sky-guardian-world .sky-realm-guardian { width:175px; }
+}
 @media(prefers-reduced-motion:reduce) { .journey-chapter { transition:none; } }
