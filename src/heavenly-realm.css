@@ -1,0 +1,78 @@
+.sky-heavenly-realm { min-height:640px; background:#efe0c4; }
+.sky-app:not(.sky-inside) .sky-header { height:104px; padding:20px 6%; color:#283c35; background:linear-gradient(#fff4e3a8,transparent); }
+.sky-app:not(.sky-inside) .sky-brand { gap:13px; }
+.sky-app:not(.sky-inside) .sky-brand img { height:64px; width:25px; filter:drop-shadow(0 1px 1px #75521450); }
+.sky-app:not(.sky-inside) .sky-brand span { font-family:Georgia,'Times New Roman',serif; font-size:27px; font-weight:400; letter-spacing:-1px; }
+.sky-app:not(.sky-inside) .sky-header nav a { font-size:13px; padding:11px 17px; }
+.sky-app:not(.sky-inside) .sky-motion-button { border:1px solid #5d684833; background:#fff6e59e; color:#33483c; }
+.sky-realm-light { position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 18% 82%,#fff5e5ef 0%,#fff5e5bb 28%,#fff5e548 48%,transparent 75%),linear-gradient(0deg,#18362d99,transparent 14%); }
+.sky-heavenly-realm .sky-garden-copy { left:6%; top:auto; bottom:82px; max-width:min(580px,47vw); color:#293d35; }
+.sky-heavenly-realm .sky-garden-copy>.sky-eyebrow { top:-41px; display:flex; align-items:center; gap:10px; opacity:1; font-size:10px; letter-spacing:2.3px!important; color:#526348; }
+.sky-realm-dot { width:5px; height:5px; flex:0 0 5px; background:#b28335; border-radius:50%; box-shadow:0 0 0 4px #b2833515; }
+.sky-heavenly-realm h1 { font-family:Georgia,'Times New Roman',serif; font-size:clamp(51px,5.05vw,84px); font-weight:400; line-height:1.09; letter-spacing:-3.3px; margin-bottom:30px; }
+.sky-heavenly-realm h1 em { font-weight:400; color:#736335; }
+.sky-heavenly-realm .sky-intro-name { font-size:16px; font-weight:600; margin-bottom:10px!important; letter-spacing:.1px; }
+.sky-heavenly-realm .sky-intro { font-size:15px; line-height:1.8; color:#4c5c4b; }
+.sky-heavenly-realm .sky-actions { margin-top:29px; gap:28px; align-items:center; }
+.sky-heavenly-realm .sky-primary { background:#2e493b; color:#fff5df!important; min-height:53px; padding:15px 22px; font-size:13px; font-weight:500; gap:24px; box-shadow:0 8px 24px #18362d20; border:1px solid #405d44; }
+.sky-heavenly-realm .sky-primary:hover { background:#3c5a48; }
+.sky-realm-resume { display:inline-flex; align-items:center; gap:11px; font-size:12px; padding:12px 2px; border-bottom:1px solid #7b775650; }
+.sky-realm-resume:hover { border-color:#33483c; }
+.sky-realm-mist { position:absolute; pointer-events:none; height:31%; width:80%; filter:blur(25px); opacity:.22; will-change:transform; background:radial-gradient(ellipse at 20% 60%,#fff7eb 0%,transparent 52%),radial-gradient(ellipse at 80% 65%,#fff7eb 0%,transparent 48%); animation:realm-mist 32s ease-in-out infinite alternate; }
+.sky-realm-mist-near { left:25%; bottom:7%; z-index:2; }
+.sky-realm-mist-far { left:25%; top:20%; width:60%; opacity:.14; animation-duration:44s; animation-delay:-13s; }
+.sky-realm-motes { position:absolute; inset:0; pointer-events:none; z-index:3; }
+.sky-realm-motes span { position:absolute; height:3px; width:3px; border-radius:50%; background:#ffe6ad; box-shadow:0 0 9px 2px #fff6e6; opacity:0; animation:realm-mote 17s ease-in-out infinite; }
+.sky-roaming-stage { position:absolute; inset:0; z-index:9; pointer-events:none; overflow:hidden; }
+.sky-realm-guardian { position:absolute; left:0; top:0; width:clamp(420px,40vw,620px); aspect-ratio:16/15; pointer-events:auto; padding:0; background:transparent; will-change:transform; border-radius:40%; cursor:help!important; transform-origin:50% 50%; }
+.sky-realm-guardian canvas { position:absolute; inset:0; display:block; width:100%; height:100%; opacity:0; transition:opacity .5s; filter:drop-shadow(0 10px 14px #433f3022); }
+.sky-realm-guardian canvas.sky-guardian-loaded { opacity:1; }
+.sky-guardian-poster { position:absolute; inset:0 auto auto 0; width:100%; height:73.333%; object-fit:contain; pointer-events:none; transition:opacity .5s; }
+.sky-guardian-poster.sky-guardian-loaded { opacity:0; }
+.sky-realm-guardian:focus-visible { outline:1px solid #eed393!important; outline-offset:-44px; }
+.sky-realm-footer { position:absolute; z-index:18; bottom:27px; left:6%; right:6%; display:flex; justify-content:space-between; align-items:center; gap:20px; color:#fff7e4; font-size:9px; letter-spacing:1.7px; }
+.sky-guardian-hint { font:italic 13px Georgia,serif; opacity:.85; letter-spacing:0; }
+.sky-realm-footer button { display:flex; align-items:center; gap:12px; padding:10px 0; background:transparent; color:inherit; font-size:10px; letter-spacing:.5px; }
+@keyframes realm-mist { from { transform:translate3d(-4%,0,0); } to { transform:translate3d(5%,-3%,0); } }
+@keyframes realm-mote { 0%,100% { opacity:0; transform:translate3d(0,12px,0); } 35%,65% { opacity:.75; } 85% { opacity:0; transform:translate3d(18px,-70px,0); } }
+.sky-entering .sky-header,.sky-entering .sky-garden-copy,.sky-entering .sky-realm-footer { opacity:0!important; pointer-events:none; transition:opacity .55s ease; }
+.sky-entering .sky-roaming-stage { z-index:55; }
+.sky-smoke-overlay { position:fixed; z-index:80; inset:0; overflow:hidden; touch-action:none; }
+.sky-smoke-overlay canvas { display:block; width:100%; height:100%; }
+@media(min-width:1800px) { .sky-heavenly-realm .sky-garden-copy { top:auto; bottom:105px; } }
+@media(max-width:1100px) and (min-width:761px) {
+  .sky-heavenly-realm .sky-garden-copy { max-width:47vw; left:5%; }
+  .sky-heavenly-realm h1 { font-size:clamp(43px,5vw,57px); letter-spacing:-2.2px; }
+  .sky-realm-guardian { width:400px; }
+}
+@media(max-width:760px) {
+  .sky-app:not(.sky-inside) .sky-header { height:88px; padding:12px 24px; gap:8px; }
+  .sky-app:not(.sky-inside) .sky-brand { gap:9px; }
+  .sky-app:not(.sky-inside) .sky-brand span { font-size:21px; }
+  .sky-app:not(.sky-inside) .sky-brand img { height:49px; width:18px; }
+  .sky-app:not(.sky-inside) .sky-header nav { gap:0; }
+  .sky-app:not(.sky-inside) .sky-header nav a { font-size:11px; padding:8px 9px; }
+  .sky-app:not(.sky-inside) .sky-motion-button { width:30px; height:30px; }
+  .sky-heavenly-realm { min-height:860px; }
+  .sky-heavenly-realm .sky-garden-background { object-position:57% center; }
+  .sky-realm-light { background:linear-gradient(180deg,#fff5e57a 0%,#fff5e51a 35%,#fff5e5e1 58%,#fff5e5f0 89%,#18362d99 100%); }
+  .sky-heavenly-realm .sky-garden-copy { left:26px; right:26px; top:auto; bottom:76px; max-width:none; }
+  .sky-heavenly-realm .sky-garden-copy>.sky-eyebrow { position:static; font-size:8px; letter-spacing:1.7px!important; margin-bottom:23px; }
+  .sky-heavenly-realm h1 { font-size:clamp(40px,10.9vw,66px); letter-spacing:-2px; line-height:1.1; margin-bottom:23px; }
+  .sky-heavenly-realm .sky-intro-name { font-size:14px; }
+  .sky-heavenly-realm .sky-intro { font-size:13px; line-height:1.7; }
+  .sky-heavenly-realm .sky-actions { gap:25px; margin-top:23px; }
+  .sky-heavenly-realm .sky-primary { min-height:48px; font-size:12px; padding:13px 18px; gap:17px; }
+  .sky-realm-resume { font-size:11px; }
+  .sky-realm-guardian { width:min(87vw,350px); }
+  .sky-realm-footer { left:26px; right:26px; bottom:20px; font-size:7px; letter-spacing:1px; gap:12px; }
+  .sky-realm-footer button { font-size:8px; gap:7px; }
+  .sky-guardian-hint { display:none; }
+}
+@media(max-width:390px) {
+  .sky-app:not(.sky-inside) .sky-header { padding-inline:20px; }
+  .sky-app:not(.sky-inside) .sky-brand span { font-size:19px; }
+  .sky-app:not(.sky-inside) .sky-header nav a { padding-inline:7px; font-size:10px; }
+  .sky-heavenly-realm h1 { font-size:39px; }
+  .sky-realm-guardian { width:87vw; }
+}

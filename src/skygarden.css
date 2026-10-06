@@ -1,0 +1,318 @@
+.sky-app{--sky-ink:#171c22;--sky-cream:#f6efdf;--sky-gold:#e7b654;--sky-night:#101c21;font-family:Arial,Helvetica,sans-serif;background:var(--sky-night);color:var(--sky-ink);overflow-x:clip;isolation:isolate;min-height:100svh;color-scheme:light}
+.sky-app *{box-sizing:border-box}
+.sky-app h1,.sky-app h2,.sky-app h3,.sky-app p{margin:0;letter-spacing:normal}
+.sky-app button,.sky-app a{font-family:inherit;touch-action:manipulation}
+.sky-app button{color:inherit;border:0;cursor:pointer}
+.sky-app a{text-decoration:none;color:inherit}
+.sky-app button:disabled{cursor:wait}
+.sky-app :focus-visible{outline:3px solid #a56c0e;outline-offset:5px}
+.sky-app button:focus:not(:focus-visible),.sky-app h1[tabindex="-1"]:focus,.sky-app h2:focus{outline:none}
+.sky-app .sky-skip{position:fixed;top:-100px;left:20px;padding:13px 20px;background:var(--sky-gold);z-index:200}
+.sky-skip:focus{top:15px}
+.sky-header{position:fixed;z-index:40;inset:0 0 auto;display:flex;align-items:center;height:110px;padding:20px 4.45%;gap:30px;color:var(--sky-ink);transition:background .3s,color .3s}
+.sky-header-dark{background:#101c21ed;color:var(--sky-cream);backdrop-filter:blur(16px)}
+.sky-brand{display:flex;align-items:center;gap:17px;background:transparent;flex-shrink:0;padding:0}
+.sky-brand img{height:70px;width:25px;object-fit:contain}
+.sky-brand span{font-size:25px;font-weight:700;letter-spacing:-.8px}
+.sky-header nav{display:flex;gap:14px;margin-left:auto}
+.sky-header nav a{position:relative;display:inline-flex;padding:11px 16px;align-items:center;font-size:17px}
+.sky-header nav a>span:last-child{position:relative;z-index:1}
+.sky-header .ember-nav-light{position:absolute;inset:0;background:#dfa54330;border-radius:30px}
+.sky-motion-button{display:grid;place-items:center;border-radius:50%;height:40px;width:40px;background:#fff4dd70;backdrop-filter:blur(10px)}
+.sky-header-dark .sky-motion-button{background:#e7b65420;color:var(--sky-gold)}
+.sky-garden{position:relative;height:100svh;min-height:760px;overflow:hidden;background:#f4d6a1}
+.sky-scene-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
+.sky-garden-background{width:calc(100% + 30px);height:calc(100% + 30px);max-width:none;left:-15px;top:-15px}
+.sky-garden-copy{position:absolute;z-index:15;top:22%;left:4.45%;max-width:650px}
+.sky-eyebrow{font:700 12px Arial,sans-serif;letter-spacing:1.2px!important;text-transform:uppercase;color:inherit}
+.sky-garden-copy>.sky-eyebrow{position:absolute;top:-38px;margin-bottom:0;opacity:.7;font-size:11px}
+.sky-garden h1{font-size:clamp(46px,4.05vw,72px);line-height:1.16;font-weight:700;letter-spacing:-1.6px;margin-bottom:35px}
+.sky-intro-name{font-size:23px;font-weight:700;margin-bottom:10px!important}
+.sky-intro{font-size:20px;line-height:1.5}
+.sky-actions{display:flex;gap:19px;flex-wrap:wrap;margin-top:40px}
+.sky-button{display:inline-flex;align-items:center;justify-content:center;gap:25px;min-height:60px;padding:17px 25px;border-radius:32px;font-size:17px;font-weight:700;background:var(--sky-gold);color:var(--sky-ink)!important;transition:transform .25s,background .25s}
+.sky-button:hover{transform:translateY(-3px);background:#f3c76b}
+.sky-secondary{background:#fff3d8b0;border:1px solid #a07a4555;backdrop-filter:blur(10px)}
+.sky-secondary:hover{background:#fff3d8}
+.sky-typing-character{position:absolute;z-index:11;right:2%;bottom:8%;width:min(38vw,540px);aspect-ratio:2/3;background-image:url('/assets/skygarden/typing-strip.webp');background-size:400% 100%;background-repeat:no-repeat;animation:sky-type 1.8s steps(4,end) infinite;filter:drop-shadow(0 18px 18px #37211e35);pointer-events:none}
+.sky-laptop-entrance{position:absolute;z-index:20;right:5%;bottom:33%;width:110px;min-height:70px;display:flex;align-items:center;justify-content:center;gap:8px;flex-direction:column;background:#fff0c341;border:1px solid #ebc25f99!important;border-radius:12px;backdrop-filter:blur(4px);font-size:12px;font-weight:700;transition:background .25s,transform .25s}
+.sky-laptop-entrance:hover{background:#ffd679c9;transform:translateY(-3px)}
+.sky-dragon-guide{position:absolute;z-index:10;left:37%;bottom:17%;width:36%;height:36%;pointer-events:none;filter:drop-shadow(0 18px 20px #38201d40)}
+.sky-dragon-guide>img{width:100%;height:100%;object-fit:contain}
+.sky-dragon-canvas{width:100%;height:100%;min-height:160px}
+.sky-dragon-canvas canvas{width:100%;height:100%;display:block}
+.sky-model-loading{display:block;font-size:13px;margin-top:30%;color:var(--sky-ink)}
+.sky-scene-caption{position:absolute;z-index:20;left:4.45%;bottom:35px;display:flex;align-items:center;gap:9px;max-width:340px;background:#fff3d8c9;backdrop-filter:blur(12px);padding:12px 15px;border-radius:10px;font-size:12px;line-height:1.4;text-align:left}
+.sky-scroll-invite{position:absolute;z-index:20;left:50%;bottom:35px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:#fff3d8ad;backdrop-filter:blur(8px);font-size:11px;padding:12px 18px;border-radius:30px}
+.sky-scroll-invite svg{animation:sky-nudge 2s ease-in-out infinite}
+.sky-workshop{position:relative;min-height:960px;height:100svh;overflow:hidden;color:var(--sky-cream);scroll-margin-top:0}
+.sky-workshop-background{object-position:center;transform-origin:65% 50%}
+.sky-project-index{position:absolute;top:149px;bottom:46px;left:2.78%;width:35%;max-width:520px;background:#101c21f5;border:1px solid #f6efdf10;border-radius:24px;padding:30px;z-index:2;backdrop-filter:blur(10px);overflow-y:auto;scrollbar-width:thin}
+.sky-project-index>.sky-eyebrow{color:var(--sky-gold);font-size:12px}
+.sky-project-index h2{font-size:32px;font-weight:700;margin:14px 0 13px;line-height:1.15;letter-spacing:-.4px}
+.sky-project-index>p:not(.sky-eyebrow){font-size:17px;color:#bbc1bd;margin-bottom:12px;line-height:1.5}
+.sky-project-list{display:grid;gap:6px}
+.sky-project-list>button{display:flex;align-items:center;gap:10px;text-align:left;min-height:72px;padding:8px 13px;border-radius:12px;background:transparent;width:100%;transition:background .2s}
+.sky-project-list>button.active{background:#26352f}
+.sky-project-list>button:hover{background:#26352fa0}
+.sky-project-list>button>span{flex:1;min-width:0}
+.sky-project-list strong{display:block;font-size:19px;font-weight:700;line-height:1.3}
+.sky-project-list small{display:block;font-size:15px;line-height:1.5;color:#bdc6c0;margin-top:6px}
+.sky-project-list em{font-size:9px;display:block;font-style:normal;letter-spacing:1px;color:var(--sky-gold);text-transform:uppercase;margin-top:6px}
+.sky-project-list svg{flex-shrink:0;color:var(--sky-gold)}
+.sky-project-caption{position:absolute;left:42.35%;right:6.25%;bottom:50px;z-index:2;padding:18px 30px;border-radius:18px;background:#101c21ec;backdrop-filter:blur(14px)}
+.sky-project-caption .sky-eyebrow{color:#e7b654;letter-spacing:1px;font-size:10px;margin-bottom:7px}
+.sky-project-caption h3{font-size:25px;font-weight:700;margin-bottom:8px}
+.sky-project-caption>p:not(.sky-eyebrow){color:#d8dcd3;font-size:18px;line-height:1.5}
+.sky-text-link{display:inline-flex;align-items:center;gap:13px;background:transparent;color:var(--sky-gold)!important;font-size:16px;font-weight:700;padding:0;min-height:28px}
+.sky-project-caption>.sky-text-link{margin-top:7px}
+.sky-text-link:hover svg{transform:translate(2px,-2px)}
+.sky-text-link svg{transition:transform .2s}
+.sky-home-link,.sky-next-room{position:absolute;z-index:2;bottom:24px;display:flex;align-items:center;gap:10px;font-size:13px;background:#101c21d9;backdrop-filter:blur(10px);color:var(--sky-cream);border-radius:30px;padding:10px 16px}
+.sky-home-link{left:2.78%}
+.sky-next-room{right:6.25%}
+.sky-journey{height:560vh;position:relative;color:var(--sky-cream)}
+.sky-journey-sticky{height:100svh;min-height:760px;position:sticky;top:0;overflow:hidden}
+.sky-journey-shade{position:absolute;inset:0;background:#0c181dd9}
+.sky-journey-content{position:relative;z-index:1;padding:170px 4.45% 50px;height:100%}
+.sky-journey-content>.sky-eyebrow{color:var(--sky-gold);font-size:13px}
+.sky-journey-content h2{font-size:44px;font-weight:700;margin:30px 0 16px;line-height:1.2}
+.sky-journey-intro{font-size:20px;color:#bac3c3}
+.sky-chapter{position:relative;z-index:2;max-width:810px;margin-top:65px;min-height:285px}
+.sky-chapter-date{color:var(--sky-gold);font-size:19px;font-weight:700}
+.sky-chapter h3{font-size:38px;font-weight:700;line-height:1.2;margin:20px 0}
+.sky-chapter p{font-size:22px;line-height:1.6;color:#dce1dd;max-width:760px}
+.sky-chapter small{display:block;color:#aebbb5;margin-top:24px;font-size:16px;line-height:1.6}
+.sky-journey-guide{position:absolute;right:2%;bottom:22%;width:31%;height:35%;pointer-events:none;opacity:.8}
+.sky-journey-guide img{width:100%;height:100%;object-fit:contain}
+.sky-milestones{display:grid;grid-template-columns:repeat(7,1fr);position:absolute;left:4.45%;right:4.45%;bottom:114px;gap:15px}
+.sky-milestones:before{content:'';position:absolute;height:1px;background:#87918b55;left:10px;right:40px;top:10px}
+.sky-milestones button{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:0;background:transparent;color:#a6b2ad;font-size:13px;min-height:90px;text-align:left}
+.sky-milestone-dot{width:9px;height:9px;border-radius:50%;background:#87918b;margin:6px 0 12px;transition:transform .2s,background .2s}
+.sky-milestones button.active{color:var(--sky-cream)}
+.sky-milestones button.active .sky-milestone-dot{background:var(--sky-gold);transform:scale(1.8)}
+.sky-milestones strong{font-size:15px;font-weight:400}
+.sky-expected{position:absolute;bottom:46px;color:#a6b2ad;font-size:14px}
+.sky-contact{position:relative;min-height:max(800px,100svh);overflow:hidden;color:var(--sky-cream)}
+.sky-contact-shade{position:absolute;inset:0;background:#0c181dda}
+.sky-contact-copy{position:relative;z-index:2;margin:0 auto;padding:155px 4.45% 100px;max-width:1440px}
+.sky-contact-copy>.sky-eyebrow{color:var(--sky-gold)}
+.sky-contact h2{font-size:clamp(44px,5vw,75px);font-weight:700;line-height:1.15;margin:22px 0 28px;letter-spacing:-1px}
+.sky-contact-copy>p:not(.sky-eyebrow){font-size:20px;line-height:1.8;color:#c7d0c7;margin-bottom:35px}
+.sky-contact-links{display:flex;gap:30px;flex-wrap:wrap;margin:40px 0}
+.sky-contact-links a{display:flex;align-items:center;gap:10px;font-size:15px}
+.sky-contact footer{position:relative;z-index:2;border-top:1px solid #f6efdf25;display:flex;justify-content:space-between;gap:20px;align-items:center;padding:25px 4.45%;font-size:12px;color:#aebbb5}
+.sky-contact footer button{display:flex;align-items:center;gap:9px;background:transparent;font-size:12px;color:#aebbb5}
+.sky-portal{position:fixed;z-index:80;overflow:hidden;background:#342718;isolation:isolate}
+.sky-portal-room{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.sky-doors{position:absolute;inset:0;perspective:1700px;transform-style:preserve-3d;pointer-events:none}
+.sky-door{position:absolute;top:0;bottom:0;width:50%;overflow:visible;transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
+.sky-door-left{left:0;transform-origin:left center}
+.sky-door-right{right:0;transform-origin:right center}
+.sky-door img{position:absolute;top:-3%;height:106%;width:128%;max-width:none;left:-14%;object-fit:fill;backface-visibility:hidden}
+.sky-doors.open .sky-door-left{transform:rotateY(-105deg)}
+.sky-doors.open .sky-door-right{transform:rotateY(105deg)}
+.sky-portal-label{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:#101c21d9;color:var(--sky-cream);padding:10px 22px;border-radius:30px;font-size:14px;white-space:nowrap}
+.sky-dialog-backdrop,.sky-notes-backdrop{position:fixed;inset:0;z-index:100;background:#061216a8;backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;padding:30px;color:var(--sky-cream)}
+.sky-dialog,.sky-notes{position:relative;background:#111e23;border:1px solid #e7b65440;border-radius:24px;padding:45px;max-width:760px;width:100%;max-height:88svh;overflow-y:auto;box-shadow:0 30px 100px #0005;color:var(--sky-cream)}
+.sky-close{position:absolute;right:18px;top:18px;background:#ffffff10;border-radius:50%;height:35px;width:35px;display:grid;place-items:center}
+.sky-dialog>.sky-eyebrow{color:var(--sky-gold);display:flex;justify-content:space-between;gap:20px;font-size:10px;padding-right:20px;line-height:1.6}
+.sky-dialog>.sky-eyebrow span{color:#bac8b6}
+.sky-dialog h2,.sky-notes h2{font-size:36px;font-weight:700;line-height:1.2;margin:24px 0}
+.sky-dialog-story{font-size:20px;color:#e7eadc;line-height:1.65}
+.sky-tags{display:flex;flex-wrap:wrap;gap:8px;margin:25px 0}
+.sky-tags>span{font-size:12px;padding:5px 9px;border:1px solid #e7b65430;border-radius:6px;color:#cfbe90}
+.sky-detail-copy{color:#aabbb6;font-size:15px;line-height:1.8}
+.sky-dialog>.sky-text-link{margin-top:30px}
+.sky-study{position:relative;margin-top:28px;padding:24px;overflow:hidden;background:#1b2b2b;border-radius:12px}
+.sky-study>.sky-eyebrow{color:var(--sky-gold);font-size:10px}
+.sky-study .ember-card-light{position:absolute;inset:0;pointer-events:none}
+.sky-study>*:not(.ember-card-light){position:relative;z-index:1}
+.sky-pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:22px 0}
+.sky-pipeline>div{display:flex;flex-direction:column;align-items:center;gap:9px;color:#8ea296;font-size:12px}
+.sky-pipeline>div>span{width:30px;height:30px;border:1px solid #5d7163;border-radius:50%;display:grid;place-items:center;font-size:10px}
+.sky-pipeline>div.active{color:#e7b654}
+.sky-pipeline>div.active>span{border-color:var(--sky-gold);background:#e7b65420}
+.sky-study .sky-button{font-size:13px;min-height:43px;padding:10px 17px;gap:13px}
+.sky-study-status{font-size:12px;line-height:1.6;color:#a3b7a7;min-height:40px;margin-top:15px!important}
+.sky-roles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
+.sky-roles>button{border:1px solid #6a7d6240;background:#132622;border-radius:8px;padding:12px 6px;font-size:12px}
+.sky-roles>button[aria-pressed=true]{background:#e7b65425;border-color:#e7b65499;color:var(--sky-gold)}
+.sky-role-copy{display:flex;flex-direction:column;gap:9px;font-size:14px;line-height:1.5;color:#b8c8b8;min-height:75px}
+.sky-role-copy strong{color:var(--sky-gold);font-weight:400}
+.sky-notes{max-width:610px}
+.sky-notes>.sky-eyebrow{color:var(--sky-gold)}
+.sky-notes>p:not(.sky-eyebrow){color:#b7c6be;font-size:15px;line-height:1.8}
+.sky-model-upload{display:flex;align-items:center;justify-content:center;gap:12px;border:1px dashed #e7b65480;padding:16px;border-radius:10px;color:var(--sky-gold);margin:25px 0 10px;position:relative;cursor:pointer;font-size:15px}
+.sky-model-upload:focus-within{outline:2px solid var(--sky-gold);outline-offset:4px}
+.sky-model-upload input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}
+.sky-notes .sky-fine-print{font-size:12px!important}
+.sky-model-status{margin:18px 0;font-size:13px;color:#e7b654;line-height:1.6}
+.sky-clip-select{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:13px;margin-bottom:20px}
+.sky-clip-select select{max-width:65%;padding:9px;border:1px solid #e7b65450;background:#26352f;color:var(--sky-cream);border-radius:6px}
+.sky-notes>.sky-text-link{margin-bottom:20px}
+.sky-notes>.sky-button{margin-top:22px;width:100%;font-size:15px}
+.sky-resting *,.sky-resting *:before,.sky-resting *:after{animation:none!important;scroll-behavior:auto!important}
+.sky-resting .sky-button,.sky-resting .sky-door,.sky-resting .sky-milestone-dot{transition:none}
+.sky-resting .sky-button:hover{transform:none}
+@keyframes sky-type{from{background-position:0% 0}
+to{background-position:133.333333% 0}
+}
+@keyframes sky-nudge{0%,100%{transform:translateY(0)}
+50%{transform:translateY(5px)}
+}
+
+@media(min-width:1800px){.sky-garden-copy{top:30%;left:7%}
+.sky-typing-character{right:9%;bottom:6%;width:680px}
+.sky-dragon-guide{left:43%;width:30%}
+.sky-laptop-entrance{right:11%;bottom:38%}
+.sky-project-index{left:7%}
+.sky-project-caption{left:42%;right:9%}
+}
+
+@media(max-width:1100px){.sky-header{height:90px;padding-inline:28px;gap:18px}
+.sky-header nav{gap:2px}
+.sky-header nav a{font-size:14px;padding:10px 12px}
+.sky-brand span{font-size:21px}
+.sky-brand img{height:56px;width:20px}
+.sky-garden-copy{left:5%;top:24%;max-width:55%}
+.sky-garden h1{font-size:49px}
+.sky-intro{font-size:17px;max-width:370px}
+.sky-typing-character{right:-3%;bottom:6%;width:52vw}
+.sky-dragon-guide{left:33%;bottom:12%;width:43%;height:32%}
+.sky-laptop-entrance{right:3%;bottom:33%;width:100px;min-height:60px}
+.sky-project-index{width:43%;padding:24px;top:120px;bottom:80px}
+.sky-project-index h2{font-size:26px}
+.sky-project-index>p:not(.sky-eyebrow){font-size:14px}
+.sky-project-list strong{font-size:17px}
+.sky-project-list small{font-size:13px}
+.sky-project-list>button{min-height:72px}
+.sky-project-caption{left:49%;right:4%;padding:22px}
+.sky-project-caption h3{font-size:23px}
+.sky-project-caption>p:not(.sky-eyebrow){font-size:15px}
+.sky-journey-content{padding-top:135px}
+.sky-chapter{max-width:75%;margin-top:50px}
+.sky-chapter h3{font-size:32px}
+.sky-chapter p{font-size:19px}
+.sky-journey-guide{right:-2%;width:36%;bottom:20%;opacity:.4}
+.sky-milestones{gap:8px}
+.sky-milestones button{font-size:11px}
+.sky-milestones strong{font-size:13px}
+}
+
+@media(max-width:760px){.sky-header{height:82px;padding:12px 20px;gap:12px}
+.sky-brand{gap:9px}
+.sky-brand span{font-size:19px}
+.sky-brand img{height:48px;width:17px}
+.sky-header nav{gap:0}
+.sky-header nav a{padding:8px 9px;font-size:11px}
+.sky-motion-button{width:31px;height:31px;flex-shrink:0}
+.sky-garden{height:100svh;min-height:850px}
+.sky-garden-copy{left:24px;right:24px;top:130px;max-width:none}
+.sky-garden-copy>.sky-eyebrow{position:static;font-size:9px;margin-bottom:18px}
+.sky-garden h1{font-size:clamp(37px,9vw,57px);letter-spacing:-1px;line-height:1.1;margin-bottom:20px}
+.sky-intro-name{font-size:18px}
+.sky-intro{font-size:14px;max-width:310px}
+.sky-actions{margin-top:24px;gap:12px}
+.sky-button{min-height:48px;padding:13px 18px;font-size:13px;gap:13px}
+.sky-typing-character{right:-2%;bottom:7%;width:66vw;max-width:380px}
+.sky-dragon-guide{left:0%;bottom:11%;width:53%;height:26%}
+.sky-laptop-entrance{right:3%;bottom:25%;width:85px;min-height:48px;font-size:10px;background:#ffe4a17d}
+.sky-laptop-entrance svg{width:16px;height:16px}
+.sky-garden-background{object-position:42% center}
+.sky-scene-caption{left:20px;bottom:20px;padding:9px 11px;font-size:10px;max-width:235px}
+.sky-scroll-invite{display:none}
+.sky-workshop{height:auto;min-height:1060px;display:flex;flex-direction:column;padding:330px 20px 80px;gap:20px}
+.sky-workshop-background{height:580px;object-position:62% center}
+.sky-project-index{position:relative;inset:auto;width:100%;max-width:none;padding:22px;overflow:visible;order:1}
+.sky-project-index h2{font-size:27px}
+.sky-project-index>p:not(.sky-eyebrow){margin-bottom:15px}
+.sky-project-list{gap:3px}
+.sky-project-list>button{min-height:71px;padding:10px}
+.sky-project-list strong{font-size:16px}
+.sky-project-list small{font-size:12px}
+.sky-project-caption{position:relative;inset:auto;order:0;margin-top:0;background:#101c21ec;padding:19px 22px}
+.sky-project-caption h3{font-size:22px}
+.sky-project-caption>.sky-text-link{margin-top:10px;font-size:13px}
+.sky-project-caption>p:not(.sky-eyebrow){font-size:14px}
+.sky-home-link{left:20px;bottom:22px;font-size:11px;padding:8px 10px}
+.sky-next-room{right:20px;bottom:22px;font-size:11px;padding:8px 10px}
+.sky-journey{height:560vh}
+.sky-journey-sticky{min-height:720px}
+.sky-journey-content{padding:125px 24px 35px}
+.sky-journey-content>.sky-eyebrow{font-size:10px}
+.sky-journey-content h2{font-size:29px;margin-top:23px;margin-bottom:13px;max-width:320px}
+.sky-journey-intro{font-size:14px;max-width:310px;line-height:1.6}
+.sky-chapter{margin-top:37px;max-width:none;min-height:270px}
+.sky-chapter-date{font-size:13px}
+.sky-chapter h3{font-size:26px;margin:15px 0;max-width:330px}
+.sky-chapter p{font-size:15px;line-height:1.7;max-width:350px}
+.sky-chapter small{font-size:11px;margin-top:18px;max-width:330px;line-height:1.7}
+.sky-journey-guide{width:47%;height:21%;bottom:16%;right:0;opacity:.14}
+.sky-milestones{left:24px;right:24px;bottom:80px;gap:12px;display:flex;overflow-x:auto;padding:3px 4px 8px;scroll-snap-type:x mandatory}
+.sky-milestones:before{right:8px}
+.sky-milestones button{font-size:12px;min-height:85px;min-width:85px;flex:0 0 85px;line-height:1.3;gap:7px;scroll-snap-align:start}
+.sky-milestones strong{font-size:12px;font-weight:700;white-space:nowrap}
+.sky-milestone-dot{width:6px;height:6px;margin:7px 0 9px}
+.sky-expected{font-size:10px;bottom:35px;max-width:270px}
+.sky-contact{min-height:max(720px,100svh)}
+.sky-contact-copy{padding:120px 24px 65px}
+.sky-contact h2{font-size:44px;line-height:1.2}
+.sky-contact-copy>p:not(.sky-eyebrow){font-size:15px;margin-bottom:27px}
+.sky-contact-links{gap:25px;margin:30px 0}
+.sky-contact-links a{font-size:13px}
+.sky-desktop-break{display:none}
+.sky-contact footer{padding:24px;gap:15px;flex-wrap:wrap;font-size:10px}
+.sky-contact footer button{font-size:10px}
+.sky-dialog-backdrop,.sky-notes-backdrop{padding:15px}
+.sky-dialog,.sky-notes{padding:35px 23px 26px;border-radius:17px;max-height:90svh}
+.sky-dialog h2,.sky-notes h2{font-size:29px}
+.sky-dialog-story{font-size:17px}
+.sky-detail-copy{font-size:13px}
+.sky-dialog>.sky-eyebrow{font-size:9px;padding-right:18px}
+.sky-dialog>.sky-eyebrow span{max-width:80px;text-align:right}
+.sky-study{padding:18px}
+.sky-roles{grid-template-columns:repeat(2,1fr)}
+.sky-study-status{min-height:57px}
+.sky-portal-label{font-size:11px;bottom:30px}
+.sky-portal-room{object-position:65% center}
+}
+
+@media(max-width:390px){.sky-header{padding-inline:14px;gap:6px}
+.sky-brand span{font-size:16px}
+.sky-header nav a{font-size:10px;padding-inline:7px}
+.sky-motion-button{width:29px;height:29px}
+.sky-garden-copy{left:20px;right:20px}
+.sky-garden h1{font-size:36px}
+.sky-milestones{left:20px;right:20px;gap:4px}
+.sky-milestones strong{font-size:12px}
+}
+
+@media(prefers-reduced-motion:reduce){.sky-app *,.sky-app *:before,.sky-app *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+
+@media(min-width:701px) and (max-height:850px){
+.sky-journey-sticky{min-height:100svh}
+.sky-journey-content{padding-top:135px}
+.sky-journey-content h2{font-size:36px;margin:18px 0 12px}
+.sky-journey-intro{font-size:17px}
+.sky-chapter{margin-top:35px;max-width:65%;min-height:220px}
+.sky-chapter h3{font-size:30px;margin:14px 0}
+.sky-chapter p{font-size:18px;line-height:1.5}
+.sky-chapter small{font-size:13px;margin-top:15px}
+.sky-milestones{bottom:64px}
+.sky-expected{bottom:26px;font-size:12px}
+}
+@media(max-width:700px) and (max-height:750px){
+.sky-journey-sticky{min-height:100svh}
+.sky-journey-content{padding-top:105px}
+.sky-journey-content h2{font-size:25px;margin-top:15px;margin-bottom:9px}
+.sky-journey-intro{font-size:13px;line-height:1.4}
+.sky-chapter{margin-top:23px;min-height:210px}
+.sky-chapter h3{font-size:22px;margin:11px 0}
+.sky-chapter p{font-size:13px;line-height:1.5}
+.sky-chapter small{font-size:10px;margin-top:12px}
+.sky-milestones{bottom:40px}
+.sky-expected{bottom:15px;font-size:9px}
+}

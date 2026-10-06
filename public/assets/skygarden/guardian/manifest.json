@@ -1,0 +1,25 @@
+{
+  "idle": {
+    "file": "idle-atlas.webp",
+    "frames": 80,
+    "frameWidth": 400,
+    "frameHeight": 275,
+    "columns": 10
+  },
+  "travel": {
+    "file": "travel-atlas.webp",
+    "frames": 80,
+    "frameWidth": 400,
+    "frameHeight": 275,
+    "columns": 10
+  },
+  "clouds": {
+    "file": "cloud-atlas.webp",
+    "frames": 9,
+    "frameWidth": 320,
+    "frameHeight": 240,
+    "columns": 3
+  },
+  "frameMs": 45,
+  "source": "User-approved transparent Flowframes PNG exports; right travel mirrors the approved left cycle."
+}

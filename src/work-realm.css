@@ -1,0 +1,75 @@
+.sky-app .work-realm{position:relative;min-height:100svh;overflow:hidden;background:#141716;color:#f1e5ce;font-family:Inter,system-ui,sans-serif}
+.sky-app .work-world{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.25) saturate(.65);z-index:0;pointer-events:none}
+.sky-app .work-world-shade{position:absolute;inset:0;background:rgba(14,19,19,.68);z-index:0;pointer-events:none}
+.sky-app .work-border{position:absolute;inset:115px 26px 26px;border:1px solid #ad855438;pointer-events:none;z-index:0}
+.sky-app .work-breadcrumb{position:absolute;top:136px;left:5.5%;display:flex;align-items:center;gap:14px;font-size:12px;z-index:20;color:#bea67f}
+.sky-app .work-breadcrumb button{background:none;border:0;color:inherit;display:flex;gap:8px;align-items:center;cursor:pointer;padding:8px 0}
+.sky-app .work-breadcrumb button:hover{color:#fff1d7}
+.sky-app .work-introduction{position:absolute;left:6.2%;top:24%;width:29%;max-width:360px;z-index:16;pointer-events:auto}
+.sky-app .work-kicker{display:flex;gap:9px;align-items:center;font-size:10px;font-weight:500;letter-spacing:.17em;text-transform:uppercase;color:#c7a875;line-height:1.6}
+.sky-app .work-introduction h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(44px,5.2vw,76px);line-height:1.01;letter-spacing:-.055em;margin:23px 0}
+.sky-app .work-introduction h1 em{color:#d2b080;font-weight:400}
+.sky-app .work-description{font-size:14px;line-height:1.75;color:#b9b7a9;max-width:310px;margin-bottom:32px}
+.sky-app .work-selection{display:flex;gap:16px;padding-top:22px;border-top:1px solid #b1915b55;min-height:162px}
+.sky-app .work-selection-number{font-family:Georgia,serif;color:#bca37a;font-size:21px}
+.sky-app .work-selection h2{font-family:Georgia,serif;font-weight:400;font-size:25px;margin:0 0 9px;letter-spacing:-.025em;color:#f4e8ce}
+.sky-app .work-selection p{font-size:12px;color:#b9b7a9;line-height:1.65;margin:0 0 13px}
+.sky-app .work-selection-meta{font-size:10px;color:#ccb281;letter-spacing:.06em;text-transform:uppercase}
+.sky-app .work-open{display:flex;align-items:center;justify-content:space-between;gap:34px;margin-top:12px;padding:14px 21px;border:1px solid #b69560;background:#d9bb8a;color:#171b19;cursor:pointer;font-size:12px;transition:background .2s,transform .2s}
+.sky-app .work-open:hover{background:#efdbb7;transform:translateY(-2px)}
+.sky-app .work-cascade{position:relative;z-index:12;pointer-events:none!important}
+.sky-app .work-cascade .dcc-stage{left:65%;top:49%;pointer-events:none}
+.sky-app .work-cascade .dcc-slide{pointer-events:auto;touch-action:pan-y}
+.sky-app .work-cascade .dcc-edge,.sky-app .work-cascade .dcc-disc{mask:none!important;-webkit-mask:none!important;border:2px solid #bb955e;box-shadow:0 14px 55px #0008,inset 0 0 0 6px #b18c5355;background:#191c19}
+.sky-app .work-cascade .dcc-hub,.sky-app .work-cascade .dcc-shade{display:none}
+.sky-app .work-cascade .dcc-idle>img{height:100%;width:100%;object-fit:cover;object-position:50% 48%;filter:saturate(.85)}
+.sky-app .work-cascade .dcc-idle{position:absolute}
+.sky-app .work-cascade .dcc-card-label{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:7px;padding:30px 22px;background:#111913e6;text-align:center;color:#f3e3c3;font-family:Georgia,serif;border-top:1px solid #bc965a88}
+.sky-app .work-cascade .dcc-card-label strong{font-size:22px;font-weight:400;line-height:1.2}
+.sky-app .work-cascade .dcc-card-label small{font-family:system-ui,sans-serif;text-transform:uppercase;font-size:9px;letter-spacing:.13em;color:#ccb281}
+.sky-app .work-cascade-medallions .dcc-card-label{bottom:13%;left:8%;right:8%;border:0;background:#151a13db;padding:12px}
+.sky-app .work-cascade-medallions .dcc-card-label strong{font-size:28px}
+.sky-app .work-cascade-cards .dcc-stage{aspect-ratio:3/4;top:51%}
+.sky-app .work-cascade-cards .dcc-disc,.sky-app .work-cascade-cards .dcc-edge,.sky-app .work-cascade-cards .dcc-shade{border-radius:5px}
+.sky-app .work-cascade .dcc-ctl{bottom:104px;right:7%;pointer-events:auto;z-index:150;gap:10px}
+.sky-app .work-cascade .dcc-btn{border:1px solid #ad8c56;background:#141c19;color:#ecd7ad;width:42px;height:42px;cursor:pointer}
+.sky-app .work-cascade .dcc-btn:hover{background:#453b28}
+.sky-app .work-cascade .dcc-count{font-size:12px;color:#dac7a4;padding:0 13px}
+.sky-app .work-quick-index{position:absolute;right:6.5%;bottom:104px;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px;max-width:41%;z-index:18;left:42%}
+.sky-app .work-quick-index button{display:flex;gap:8px;border:1px solid #af8d563f;padding:8px 11px;background:#111b17e8;color:#b6b5a5;font-size:10px;cursor:pointer}
+.sky-app .work-quick-index button span{color:#bda77e}
+.sky-app .work-quick-index button[aria-pressed=true]{border-color:#c3a16a;color:#f4e4c7;background:#3e3829}
+.sky-app .work-footer{position:absolute;left:6.2%;right:6.2%;bottom:45px;display:flex;justify-content:space-between;align-items:center;z-index:20;color:#b5a285}
+.sky-app .work-footer>span{display:flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.12em}
+.sky-app .work-footer button{display:flex;align-items:center;gap:18px;border:0;background:none;color:#e0c99f;font-size:12px;cursor:pointer;padding:10px 0}
+.sky-guardian-world{position:fixed;inset:0;pointer-events:none;z-index:10}
+.sky-inside .sky-guardian-world .sky-realm-guardian{width:clamp(280px,29vw,420px)}
+.sky-entering .sky-guardian-world{z-index:55}
+.sky-app .work-realm button:focus-visible,.sky-app .work-realm a:focus-visible{outline:2px solid #f9d899;outline-offset:5px}
+.sky-app .work-realm h1:focus{outline:none}
+.sky-app .work-profile-layout{display:grid;grid-template-columns:minmax(230px,.8fr) 1.2fr;gap:7%;width:87.6%;max-width:1150px;margin:196px auto 135px;position:relative;z-index:15;align-items:start}
+.sky-app .work-profile-art{position:sticky;top:150px;max-height:650px;aspect-ratio:3/4;border:1px solid #b38d51;padding:7px;background:#101615;box-shadow:0 24px 65px #0007}
+.sky-app .work-profile-art img{width:100%;height:100%;object-fit:cover}
+.sky-app .work-card-seal{position:absolute;left:20px;top:20px;display:flex;align-items:center;gap:9px;padding:9px 12px;background:#0c1819cc;font-size:11px;color:#e6c99d;border:1px solid #b7975b66}
+.sky-app .work-profile-art-caption{position:absolute;left:20px;right:20px;bottom:22px;border:1px solid #b7975b66;padding:12px;background:#0c1819e8;color:#e6c99d;font-size:12px;text-align:center}
+.sky-app .work-profile-copy h1{font-family:Georgia,serif;font-weight:400;letter-spacing:-.04em;font-size:clamp(36px,4vw,56px);line-height:1.08;margin:20px 0}
+.sky-app .work-lede{font-family:Georgia,serif;font-size:21px;color:#c6b18b;line-height:1.4}
+.sky-app .work-facts{display:flex;gap:14px;flex-wrap:wrap;border-block:1px solid #b7975b44;padding:14px 0;font-size:11px;color:#bfa478;margin:26px 0}
+.sky-app .work-story h2{font-size:10px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:#d4b987;margin:26px 0 9px}
+.sky-app .work-story p{font-size:14px;line-height:1.8;color:#c8c7b9;margin:0}
+.sky-app .work-tags{display:flex;flex-wrap:wrap;gap:7px;list-style:none;padding:0;margin:26px 0}
+.sky-app .work-tags li{padding:7px 10px;font-size:10px;color:#dac49c;border:1px solid #b7975b44}
+.sky-app .work-profile-actions{display:flex;flex-wrap:wrap;gap:24px}
+.sky-app .work-profile-actions a,.sky-app .work-profile-actions button{display:flex;align-items:center;gap:9px;color:#e6c99b;background:none;border:0;padding:8px 0;font-size:12px;text-decoration:none;cursor:pointer}
+@media(min-width:1600px){.sky-app .work-introduction{top:27%}.sky-app .work-quick-index{bottom:24%}}
+@media(max-width:900px){.sky-app .work-introduction{left:6%;width:33%;top:23%}.sky-app .work-introduction h1{font-size:49px}.sky-app .work-description{font-size:12px;margin-bottom:20px}.sky-app .work-selection h2{font-size:22px}.sky-app .work-selection{min-height:170px}.sky-app .work-cascade .dcc-stage{left:70%;top:45%}.sky-app .work-quick-index{max-width:53%;bottom:160px}.sky-app .work-profile-layout{gap:5%}.sky-app .work-profile-copy h1{font-size:40px}}
+@media(max-width:600px){
+ .sky-app .work-realm{min-height:960px}.sky-app .work-border{inset:90px 12px 15px}.sky-app .work-breadcrumb{top:103px;left:7%;font-size:10px;gap:10px}.sky-app .work-introduction{top:148px;left:8%;right:8%;width:auto;max-width:none}.sky-app .work-kicker{font-size:9px}.sky-app .work-introduction h1{font-size:41px;margin:13px 0;line-height:1.06}.sky-app .work-introduction h1 br{display:none}.sky-app .work-description{max-width:95%;font-size:12px;margin:0;line-height:1.65}.sky-app .work-selection{position:absolute;top:477px;min-height:0;border-top:1px solid #b1915b55;padding-top:17px;left:0;right:0}.sky-app .work-selection h2{font-size:24px}.sky-app .work-selection p{font-size:11px;margin-bottom:8px}.sky-app .work-open{position:absolute;top:636px;margin:0;padding:12px 16px}.sky-app .work-cascade{height:960px!important}.sky-app .work-cascade .dcc-stage{left:49%;top:49%;width:235px}.sky-app .work-cascade-cards .dcc-stage{width:195px;top:49%}.sky-app .work-cascade .dcc-card-label strong{font-size:20px}.sky-app .work-cascade .dcc-card-label{padding:18px 12px}.sky-app .work-cascade-medallions .dcc-card-label strong{font-size:25px}.sky-app .work-cascade .dcc-ctl{bottom:143px;right:8%;gap:0}.sky-app .work-cascade .dcc-count{padding:0 9px}.sky-app .work-cascade .dcc-btn{width:36px;height:36px}.sky-app .work-quick-index{top:823px;bottom:auto;left:8%;right:8%;max-width:none;justify-content:flex-start;gap:4px}.sky-app .work-quick-index button{font-size:9px;padding:6px 7px;gap:5px}.sky-app .work-footer{bottom:27px;left:8%;right:8%;gap:12px}.sky-app .work-footer>span{font-size:7px;max-width:150px;line-height:1.6}.sky-app .work-footer button{font-size:10px;gap:9px}.sky-inside .sky-guardian-world .sky-realm-guardian{width:290px}.sky-app .work-profile-layout{display:flex;flex-direction:column;width:84%;margin-top:155px;gap:24px}.sky-app .work-profile-art{position:relative;top:0;width:75%;max-width:300px;align-self:center}.sky-app .work-profile-copy h1{font-size:36px}.sky-app .work-profile-copy .work-kicker{flex-wrap:wrap;gap:3px}.sky-app .work-profile-copy{width:100%}.sky-app .work-story p{font-size:13px}.sky-app .work-profile .work-footer{position:relative;left:8%;right:auto;bottom:auto;width:84%;padding-bottom:35px}.sky-app .work-profile-layout{margin-bottom:38px}.sky-app .work-profile .work-border{bottom:16px}
+}
+@media(prefers-reduced-motion:reduce){.sky-app .work-realm *{transition:none!important;animation:none!important}}
+.sky-journey-bottom{display:flex;justify-content:center;gap:24px;padding:40px;background:#142421;position:relative;z-index:16}.sky-inside .sky-header{background:#101a18ed}.sky-inside .sky-header .sky-brand{font-family:Georgia,serif;font-weight:400}.sky-inside .sky-header .sky-brand img{width:32px;height:72px;object-fit:contain}.sky-inside .sky-header nav a{font-size:13px}.sky-inside .sky-header{height:104px}.sky-resting .work-realm *{animation:none!important;transition:none!important}@media(max-width:600px){.sky-inside .sky-header{height:86px}.sky-inside .sky-header .sky-brand{font-size:18px}.sky-inside .sky-header .sky-brand img{width:20px;height:55px}.sky-inside .sky-header nav a{font-size:10px;padding:8px 7px}.sky-journey-bottom{gap:12px;padding:26px 16px}.sky-journey-bottom .sky-button{font-size:11px;padding:12px}}
+@media(min-width:901px) and (max-height:800px){.sky-app .work-introduction{top:23%}.sky-app .work-introduction h1{font-size:62px;margin:18px 0}.sky-app .work-description{max-width:340px;margin-bottom:22px;line-height:1.65}.sky-app .work-selection{min-height:140px;padding-top:18px}.sky-app .work-open{margin-top:8px}}
+.sky-app .work-cascade .dcc-ctl{bottom:98px;right:6%}.sky-app .work-cascade .dcc-btn{width:36px;height:36px}.sky-app .work-cascade .dcc-count{padding:0 8px}@media(max-width:900px) and (min-width:601px){.sky-app .work-quick-index{bottom:157px;left:45%;max-width:49%;justify-content:flex-end}.sky-app .work-cascade .dcc-ctl{bottom:99px}}@media(max-width:600px){.sky-app .work-quick-index{left:8%;max-width:none;bottom:auto}.sky-app .work-cascade .dcc-ctl{bottom:143px;right:8%}}
+@media(min-width:601px){.sky-app .work-collection .work-introduction h1{font-size:clamp(38px,4vw,52px)}}@media(max-width:600px){.sky-app .work-realm:not(.work-profile){min-height:1000px}.sky-app .work-quick-index{top:843px}.sky-app .work-collection .work-introduction h1{font-size:36px}}
+.sky-app .work-cascade{-webkit-mask-image:linear-gradient(to right,transparent 36%,#000 46%);mask-image:linear-gradient(to right,transparent 36%,#000 46%)}@media(max-width:600px){.sky-app .work-cascade{-webkit-mask-image:none;mask-image:none}}@media(min-width:901px){.sky-app .work-quick-index button{font-size:9px;padding:8px 9px;gap:5px}}
+@media(max-width:600px){.sky-app .work-realm:not(.work-collection) .work-introduction h1 em{margin-left:.18em}}
