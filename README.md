@@ -42,4 +42,4 @@ Local design evidence is summarized in `design-qa.md`. Generated QA images, orig
 - Production: https://jashwanth-ai-portfolio.vercel.app
 - Vercel project: `jashwanth-ai-portfolio`, scope `longnidhoggs-projects`.
 
-The previous portfolio address remains unchanged. This project was deployed from `tmp/deploy-heavenly`, explicitly linked to the new Vercel project. The root `.vercel` mapping still belongs to the previous project: use the new project's linked deployment directory for subsequent manual deployments. Automatic Git deployments are not connected. The new resume draft is awaiting review; the current website download has not been replaced.
+The previous portfolio address remains unchanged. This project was deployed from `tmp/deploy-heavenly`, explicitly linked to the new Vercel project. The local root `.vercel` mapping now also points to this new project; the previous mapping is backed up in `output/previous-vercel-project.json`. Automatic Git deployments are not connected. The new resume draft is awaiting review; the current website download has not been replaced.
