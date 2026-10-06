@@ -4,10 +4,14 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable,
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 from reportlab.lib.pagesizes import letter
+import os
+from html import escape
 import pdfplumber
 
 root=Path(__file__).resolve().parents[1]
-out=root/'output/pdf/jashwanth_resume_jake.pdf'
+out=root/'output/pdf/jashwanth_resume_latest.pdf'
+portfolio_url=os.environ.get('PORTFOLIO_URL', 'https://jashwanth-ai-portfolio.vercel.app').rstrip('/')
+portfolio_label=portfolio_url.removeprefix('https://').removeprefix('http://')
 out.parent.mkdir(parents=True,exist_ok=True)
 width=letter[0]-72
 styles={
@@ -35,10 +39,10 @@ def project(title,tools,copy):
 
 add('NAREDDY JASHWANTH REDDY','name')
 add('Melbourne, VIC | +61 432 396 557 | <link href="mailto:jashwanthreddysungjin@gmail.com"><u>jashwanthreddysungjin@gmail.com</u></link>','contact')
-add('<link href="https://jashwanth-reddy-portfolio.vercel.app"><u>jashwanth-reddy-portfolio.vercel.app</u></link> | <link href="https://github.com/NaReddyJashwanthReddy"><u>GitHub: NaReddyJashwanthReddy</u></link> | <link href="https://www.kaggle.com/jashwanthreddy0264"><u>Kaggle: jashwanthreddy0264</u></link>','contact')
+add(f'<link href="{escape(portfolio_url, quote=True)}"><u>{escape(portfolio_label)}</u></link> | <link href="https://github.com/NaReddyJashwanthReddy"><u>GitHub: NaReddyJashwanthReddy</u></link> | <link href="https://www.kaggle.com/jashwanthreddy0264"><u>Kaggle: jashwanthreddy0264</u></link>','contact')
 
 section('Summary')
-add('An electrical engineering foundation and AI/ML minor led to language-model work, then production computer vision at Fotos. There, photography workflows achieved <b>&gt;99% detection accuracy</b> and reduced manual editing effort by <b>60%</b>. Now pursuing a Master of Artificial Intelligence at Monash, with projects spanning RAG, agents, multimodal analysis, and model adaptation.')
+add('An electrical engineering foundation and AI/ML minor led me from language-model experiments to production computer vision at Fotos. Building tools for photographers taught me to connect models with everyday workflows. Now studying AI at Monash, I am applying that approach to evidence-grounded assistants, agent collaboration, and domain-focused training.')
 
 section('Education')
 entry('Monash University','2026 - 2028 (Expected)','Master of Artificial Intelligence | Current WAM: 79.0 | GPA: 3.5')
@@ -47,26 +51,26 @@ add('<i>Minor: Computer Science - Artificial Intelligence &amp; Machine Learning
 
 section('Experience')
 entry('AI Engineer','Feb 2025 - Jan 2026','Fotos','Remote')
-bullet('For photography workflows that needed reliable facial analysis, deployed GCP vision microservices using TensorFlow, OpenCV, RetinaFace, and DeepFace/ArcFace; achieved <b>&gt;99% accuracy</b> for facial, eye, and mouth topology detection.')
+bullet('Deployed GCP vision microservices for photography using TensorFlow, OpenCV, RetinaFace, and DeepFace/ArcFace; achieved <b>&gt;99% accuracy</b> for facial, eye, and mouth topology detection.')
 bullet('Extended photo culling beyond face detection by combining identity clustering, quality/expression scoring, and Qwen2.5-VL served with vLLM, enabling context-aware image assessment and ranking.')
-bullet('Addressed manual editing effort with neural preset-based color style transfer, reducing professional editing time by <b>60%</b>; supported production serving through cloud deployment, inference APIs, and performance monitoring.')
+bullet('Reduced professional editing time by <b>60%</b> with neural preset-based color style transfer; supported cloud deployment, inference APIs, and performance monitoring.')
 entry('Artificial Intelligence Intern','Jan 2024 - Feb 2024','Navodita InfoTech','Remote')
-bullet('Worked across two language tasks: conversational responses through a spaCy/NLTK chatbot with transformer generation, and French-English translation through an encoder-decoder model that achieved <b>BLEU 0.8</b>.')
+bullet('Built conversational responses with a spaCy/NLTK chatbot and transformer generation, alongside an encoder-decoder French-English translator that achieved <b>BLEU 0.8</b>.')
 
 section('Projects')
-project('Multi-Agent &amp; Voice AI Assistants','LangGraph, RAG, Google APIs, STT/TTS',
- 'Connected conversations to actions: a Telegram assistant routes email, calendar, news, and travel requests using intent detection, RAG, and Google APIs. A travel-sales voice assistant links speech recognition, an LLM, retrieval, and speech synthesis.')
-project('LLM Fine-Tuning &amp; Domain Adaptation','Qwen3, Hugging Face, PyTorch',
- 'Adapted models for different contexts: fine-tuned role-structured, multi-turn chat data for concise replies and tested unseen prompts; continued pretraining of Qwen3 on approximately 20 medical books to adapt terminology for a health-information assistant.')
-project('Generative Models from Scratch','PyTorch, GANs, Diffusion, U-Net, CIFAR',
- 'Explored image generation from the training loop upward: implemented GAN architectures, adversarial loss, and alternating optimization, then a diffusion pipeline with timestep conditioning, U-Net noise prediction, and reverse denoising.')
-project('Multimodal Image Analysis &amp; Computer Vision','CLIP, YOLO, OpenCV, VLMs',
- 'Turned image-and-text analysis into structured JSON with quality scores, visual drawbacks, and explanations for downstream integration; explored semantic ranking with CLIP and object-level analysis with YOLO/OpenCV.')
-project('Predictive ML &amp; Analytics','XGBoost, Random Forest, Optuna, SQL, FastAPI, Power BI',
- 'Connected churn predictions to retention decisions through SQL/EDA, stratified cross-validation, APIs, dashboards, and A/B-testing design. A separate loan-approval classifier achieved <b>0.97070 public-leaderboard ROC-AUC</b> using Optuna and 5-fold cross-validation.')
+project('Safety Compliance Agent','Hybrid RAG, Reranking, Citation Validation',
+ 'Built a backend prototype for questions that need traceable evidence: retrieves relevant material, reranks it, grounds an answer, and validates its supporting citations before returning a response.')
+project('AgentForge - In Development','AI Agents, Role Orchestration',
+ 'Designing a workspace where specialised agents contribute to a shared task. Separating responsibilities and making contributions visible supports clearer collaboration across an evolving workflow.')
+project('Medical Language Adaptation &amp; BERT Sentiment','MLM, SFT / CLM, Google Colab',
+ 'Explored a staged training approach using <b>20+ medical books and research papers</b> for masked-language-modeling adaptation, followed by supervised fine-tuning on labelled, LLM-generated conversations with a causal objective. Separately adapted BERT with MLM for sentiment analysis.')
+project('Brain Tumour Detection','CNN, Optuna, Google Colab',
+ 'Developed a CNN experiment for brain-tumour detection, using Optuna to search hyperparameter configurations systematically and evaluating the resulting model on a held-out test dataset.')
+project('Predictive ML &amp; Analytics','XGBoost, Optuna, SQL, FastAPI',
+ 'Connected churn modelling to business-facing analytics through APIs and dashboards. A separate loan-approval classifier achieved <b>0.97070 public-leaderboard ROC-AUC</b> using Optuna and 5-fold cross-validation.')
 
 section('Technical Skills')
-add('<b>Languages &amp; data:</b> Python, SQL, C++, MongoDB, Power BI.<br/><b>ML &amp; deep learning:</b> scikit-learn, XGBoost, Random Forest, Optuna, PyTorch, TensorFlow, Hugging Face; classification, clustering, feature engineering, cross-validation, transformers, GANs, diffusion.<br/><b>GenAI &amp; vision:</b> LLM fine-tuning, domain adaptation, RAG, agents, NLP, LangGraph, LangChain, CLIP, YOLO, OpenCV.<br/><b>Engineering:</b> FastAPI, vLLM, GCP, Docker, Git/GitHub, REST APIs, CUDA, MLOps, deployment and monitoring.')
+add('<b>Languages &amp; data:</b> Python, SQL, C++, MongoDB, Power BI.<br/><b>ML &amp; deep learning:</b> PyTorch, TensorFlow, scikit-learn, Hugging Face, XGBoost, Optuna; CNNs, transformers, GANs, diffusion.<br/><b>GenAI &amp; vision:</b> RAG, LangGraph, LangChain, fine-tuning, prompt tuning, byte-pair tokenization, CLIP, YOLO, OpenCV.<br/><b>Engineering:</b> FastAPI, vLLM, GCP, Docker, Git/GitHub, REST APIs, deployment and monitoring.')
 section('Achievements & Certification')
 add('ATVC Innovation Runner-Up (2023) | My Anatomy AI-thon Finalist (2023)<br/>Advanced Data Science &amp; AI Certification - Intellipaat (IIT-Madras)')
 
@@ -75,5 +79,5 @@ doc.build(flow)
 qa=root/'tmp/pdfs';qa.mkdir(parents=True,exist_ok=True)
 with pdfplumber.open(out) as pdf:
  print('Pages:',len(pdf.pages))
- for i,page in enumerate(pdf.pages):page.to_image(resolution=140).save(str(qa/f'resume-jake-{i+1}.png'))
+ for i,page in enumerate(pdf.pages):page.to_image(resolution=140).save(str(qa/f'resume-latest-{i+1}.png'))
 print(out)
