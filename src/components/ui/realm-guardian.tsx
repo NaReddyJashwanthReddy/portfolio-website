@@ -69,8 +69,8 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
         ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
       if (journeyPath && !command.current.entering) {
         const path = journeyPath.getBoundingClientRect();
-        // Ride lower on the desktop bridge so the first chapter stays readable.
-        s.position = { x: path.left, y: path.top + size * .16 };
+        // Keep its feet above the bridge deck, matching the guided walking pose.
+        s.position = { x: path.left, y: path.top - size * .16 };
         s.right = journeyPath.dataset.direction !== 'left';
         s.initialized = true;
       } else if (!s.initialized) {
@@ -140,7 +140,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
         }
         s.pathProgress = progress;
         // Scroll controls position even while ambient animation is paused.
-        s.position = { x: pathRect.left, y: pathRect.top + w.size * (w.width >= 760 ? .16 : -.16) };
+        s.position = { x: pathRect.left, y: pathRect.top - w.size * .16 };
         if (!moving || held) { s.phase = 'idle'; s.elapsed = 0; }
         else if (now < s.pathTravelUntil) { s.phase = 'travel'; s.elapsed = 0; }
         else if (s.phase === 'travel') { s.phase = 'settle'; s.elapsed = 0; }
