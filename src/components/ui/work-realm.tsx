@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Compass, Layers } from 'lucide-react';
 import DiscCascadeCarousel from './disc-cascade-carousel';
+import { AgentArchitecturePreview } from './agent-architecture-preview';
 import { workCategories, type WorkRoute } from '../../data/work-catalog';
 import '../../work-realm.css';
 
@@ -33,6 +34,7 @@ export function WorkRealm({ route, moving, navigate }: { route: WorkRoute; movin
         <div className="work-facts"><span>{project.status}</span>{project.period && <span>{project.period}</span>}</div>
         <div className="work-story"><h2>The question</h2><p>{project.story}</p><h2>The approach</h2><p>{project.approach}</p><h2>{project.status === 'In development' ? 'Progress so far' : 'Result'}</h2><p>{project.outcome}</p></div>
         <ul className="work-tags" aria-label="Technologies">{project.tech.map(tag => <li key={tag}>{tag}</li>)}</ul>
+        {project.id === 'agentforge' && <AgentArchitecturePreview />}
         <div className="work-profile-actions">{project.source && <a href={project.source} target="_blank" rel="noreferrer">{project.sourceLabel ?? 'View repository'} <ArrowUpRight size={17} /></a>}<button onClick={() => navigate({ page: 'work', category: category!.id })}><ArrowLeft size={16} /> Back to the collection</button></div>
       </article>
     </div> : <>

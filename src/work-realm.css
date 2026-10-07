@@ -61,6 +61,18 @@
 .sky-app .work-tags li{padding:7px 10px;font-size:10px;color:#dac49c;border:1px solid #b7975b44}
 .sky-app .work-profile-actions{display:flex;flex-wrap:wrap;gap:24px}
 .sky-app .work-profile-actions a,.sky-app .work-profile-actions button{display:flex;align-items:center;gap:9px;color:#e6c99b;background:none;border:0;padding:8px 0;font-size:12px;text-decoration:none;cursor:pointer}
+.sky-app .agent-architecture-preview{border:1px solid #b7975b66;margin:24px 0;background:#101a18cc}
+.sky-app .agent-architecture-preview summary{padding:16px;cursor:pointer;color:#e6c99b;font-size:13px}
+.sky-app .agent-architecture-preview summary:focus-visible{outline:2px solid #f9d899;outline-offset:3px}
+.sky-app .agent-architecture-body{padding:0 16px 16px;font-size:13px;line-height:1.7;color:#c8c7b9}
+.sky-app .agent-architecture-note{font-size:11px;color:#c7a875}
+.sky-app .agent-role-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:18px 0}
+.sky-app .agent-role-grid button{border:1px solid #b7975b66;background:#16221f;color:#dfd2b7;padding:10px 5px;font-size:11px;cursor:pointer}
+.sky-app .agent-role-grid button[aria-pressed=true]{background:#d9bb8a;color:#171b19;border-color:#d9bb8a}
+.sky-app .agent-role-inspector{border-top:1px solid #b7975b44;padding-top:14px}
+.sky-app .agent-role-inspector h3{font-family:Georgia,serif;font-weight:400;font-size:20px;color:#e6c99b;margin:0 0 7px}
+.sky-app .agent-role-inspector p{margin:0}
+@media(max-width:600px){.sky-app .agent-role-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1600px){.sky-app .work-introduction{top:27%}.sky-app .work-quick-index{bottom:24%}}
 @media(max-width:900px){.sky-app .work-introduction{left:6%;width:33%;top:23%}.sky-app .work-introduction h1{font-size:49px}.sky-app .work-description{font-size:12px;margin-bottom:20px}.sky-app .work-selection h2{font-size:22px}.sky-app .work-selection{min-height:170px}.sky-app .work-cascade .dcc-stage{left:70%;top:45%}.sky-app .work-quick-index{max-width:53%;bottom:160px}.sky-app .work-profile-layout{gap:5%}.sky-app .work-profile-copy h1{font-size:40px}}
 @media(max-width:600px){

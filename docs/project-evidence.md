@@ -27,3 +27,11 @@ The prompt-tuning result uses the saved cell-44 validation-loss table: 0.964061 
 Docker and scikit-learn are restored from the user's existing skills and ML application work; RAG and LangChain are additionally supported by the supplied retrieval notebook. Docker is not newly attributed to Fotos based solely on GCP usage. Groq remains in project stacks, rather than the general skills list. No new Fotos scale or performance number is inferred.
 
 The user clarified that Fotos results were reviewed on Indian wedding images with 10+ people per image, and that the >99% figure was estimated from visual review rather than measured against labels. Copy includes the image context and visual-review method, but does not present that estimate as detection accuracy.
+
+## Presentation and remaining evidence gaps
+
+Fotos evaluation is now described as qualitative evaluation on crowded Indian wedding photos. The user confirmed there are no additional defensible scale figures or retained Qwen3 comparison results. No throughput, latency, user-count or medical-model improvement claim is added.
+
+The personal project's display title is now **Multi-Agent Workspace**, distinguishing it from the unrelated AgentForge package on PyPI (https://pypi.org/project/agentforge/). The existing `agentforge` route ID remains stable for previously shared links. An interactive eight-role architecture preview is exposed within its project profile using the existing role descriptions. It demonstrates role selection and responsibilities, not model execution or an operational agent backend. The project remains in development.
+
+Resume skills now separate Vision tools from GenAI, with RAG, LangChain and LangGraph grouped under GenAI.

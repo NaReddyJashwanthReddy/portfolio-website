@@ -43,10 +43,10 @@ def education(institution,date,degree,grades,minor=None,minor_grade=None):
  t.setStyle(TableStyle([('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),0),('TOPPADDING',(0,0),(-1,-1),0),('BOTTOMPADDING',(0,0),(-1,-1),1),('VALIGN',(0,0),(-1,-1),'TOP')]))
  flow.append(KeepTogether([t]));flow.append(Spacer(1,4))
 def bullet(text):flow.append(Paragraph(text,styles['bullet'],bulletText='\u2022'))
-def project(title,tools,copy,route):
+def project(title,tools,copy,route,link_label='Details'):
  copies=[copy] if isinstance(copy,str) else copy
  details=f'{portfolio_url}/#{route}'
- flow.append(KeepTogether([p(f'<b>{title}</b> | <i>{tools}</i> | <link href="{escape(details, quote=True)}"><u>Details</u></link>')]+[Paragraph(item,styles['bullet'],bulletText='\u2022') for item in copies]));flow.append(Spacer(1,3))
+ flow.append(KeepTogether([p(f'<b>{title}</b> | <i>{tools}</i> | <link href="{escape(details, quote=True)}"><u>{escape(link_label)}</u></link>')]+[Paragraph(item,styles['bullet'],bulletText='\u2022') for item in copies]));flow.append(Spacer(1,3))
 
 add('NAREDDY JASHWANTH REDDY','name')
 add('Melbourne, VIC | +61 432 396 557 | <link href="mailto:jashwanthreddysungjin@gmail.com"><u>jashwanthreddysungjin@gmail.com</u></link>','contact')
@@ -64,7 +64,7 @@ education('BVRIT (JNTUH)','2020 - 2024',
 
 section('Experience')
 entry('AI Engineer','Feb 2025 - Jan 2026','Fotos - AI-powered photography workflows','Remote')
-bullet('Deployed GCP vision microservices with RetinaFace and DeepFace/ArcFace for face, eye and mouth analysis; visually reviewed results on <b>Indian wedding images with 10+ people per image</b>.')
+bullet('Deployed GCP vision microservices with RetinaFace and DeepFace/ArcFace for face, eye and mouth analysis; qualitatively evaluated on <b>crowded Indian wedding photos with 10+ people per image</b>.')
 bullet('Extended photo culling beyond face detection by combining identity clustering, quality/expression scoring, and Qwen2.5-VL served with vLLM, enabling context-aware image assessment and ranking.')
 bullet('Reduced manual editing time by <b>60%</b> with neural preset style transfer; managed deployment, inference APIs, and monitoring.')
 entry('Artificial Intelligence Intern','Jan 2024 - Feb 2024','Navodita InfoTech','Remote')
@@ -72,12 +72,12 @@ bullet('Built a chatbot that preprocesses user messages with spaCy/NLTK and gene
 
 section('Selected Projects')
 # Lead with the user's flagship, then two complementary established areas.
-# AgentForge stays in development; completed architecture work is described separately.
-project('AgentForge - In Development','Multi-Agent Systems | Python, LangGraph, Groq',[
- 'Building a workspace that coordinates <b>eight specialised roles</b> across planning, research, product, marketing, development, testing, review and task management.',
- 'Defined task dependencies, shared project state and structured artifacts so specialists receive role-relevant context and hand work between stages.',
+# The workspace stays in development; the preview demonstrates its role architecture.
+project('Multi-Agent Workspace - In Development','Python, LangGraph, Groq',[
+ 'Building a workspace for <b>eight specialist agents</b>; published an interactive role-architecture preview.',
+ 'Defined task dependencies, shared project state and structured artifacts to support role-specific context and handoffs.',
  'Designed separate testing and requirements-review stages, revision loops and human approval gates.',
-], 'work/agents/agentforge')
+], 'work/agents/agentforge', 'Architecture preview')
 project('Multimodal Image Analysis','Computer Vision | Qwen2.5-VL, CLIP, YOLO, OpenCV',[
  'Built an image-plus-text quality-assessment pipeline returning <b>structured JSON</b> with quality scores, identified visual drawbacks, and explanations, making model outputs easier to integrate with downstream applications.',
  'Prototyped <b>4-bit Qwen2.5-VL-3B</b> image-and-text inference in Colab; ran separate CLIP ranking and YOLO/OpenCV experiments for semantic matching and object-level analysis.',
@@ -89,7 +89,7 @@ project('LLM Fine-Tuning &amp; Domain Adaptation','NLP | Qwen3, Hugging Face, Py
 ], 'work/ml-analytics/medical-language')
 
 section('Technical Skills')
-add('<b>Languages:</b> Python, SQL.<br/><b>ML &amp; language:</b> PyTorch, TensorFlow, scikit-learn, Hugging Face, CNNs, transformers, fine-tuning, prompt tuning, byte-pair tokenization.<br/><b>Vision &amp; agents:</b> OpenCV, RetinaFace, DeepFace/ArcFace, CLIP, YOLO, RAG, LangGraph, LangChain.<br/><b>Engineering:</b> Docker, FastAPI, vLLM, GCP, Git/GitHub, REST APIs, deployment and monitoring.')
+add('<b>Languages:</b> Python, SQL.<br/><b>ML:</b> PyTorch, TensorFlow, scikit-learn, CNNs, transformers.<br/><b>Vision:</b> OpenCV, RetinaFace, DeepFace/ArcFace, CLIP, YOLO.<br/><b>GenAI:</b> Hugging Face, fine-tuning, prompt tuning, RAG, LangGraph, LangChain, byte-pair tokenization.<br/><b>Engineering:</b> Docker, FastAPI, vLLM, GCP, Git/GitHub, REST APIs, deployment and monitoring.')
 section('Achievements & Certification')
 add('ATVC Innovation Runner-Up (2023) | My Anatomy AI-thon Finalist (2023)<br/>Advanced Data Science &amp; AI Certification - Intellipaat (IIT-Madras)')
 
