@@ -65,7 +65,15 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       } };
       const s = state.current;
       const w = world.current;
-      if (!s.initialized) {
+      const journeyPath = command.current.followJourney && w.width >= 760
+        ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
+      if (journeyPath && !command.current.entering) {
+        const path = journeyPath.getBoundingClientRect();
+        // Ride lower on the desktop bridge so the first chapter stays readable.
+        s.position = { x: path.left, y: path.top + size * .16 };
+        s.right = journeyPath.dataset.direction !== 'left';
+        s.initialized = true;
+      } else if (!s.initialized) {
         s.position = { x: w.width < 761 ? w.width * .52 : w.width * .73,
           y: w.width < 761 ? w.height * .34 : w.height * .42 };
         s.initialized = true;
@@ -125,13 +133,14 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       else if (pathNode && command.current.followJourney) {
         const pathRect = pathNode.getBoundingClientRect();
         const progress = Number(pathNode.dataset.progress ?? 0);
+        if (s.pathProgress < 0 && w.width >= 760) s.right = pathNode.dataset.direction !== 'left';
         if (s.pathProgress >= 0 && Math.abs(progress - s.pathProgress) > .00001) {
           s.right = progress > s.pathProgress;
           s.pathTravelUntil = now + 450;
         }
         s.pathProgress = progress;
         // Scroll controls position even while ambient animation is paused.
-        s.position = { x: pathRect.left, y: pathRect.top - w.size * .16 };
+        s.position = { x: pathRect.left, y: pathRect.top + w.size * (w.width >= 760 ? .16 : -.16) };
         if (!moving || held) { s.phase = 'idle'; s.elapsed = 0; }
         else if (now < s.pathTravelUntil) { s.phase = 'travel'; s.elapsed = 0; }
         else if (s.phase === 'travel') { s.phase = 'settle'; s.elapsed = 0; }

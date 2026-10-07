@@ -16,13 +16,18 @@ export function HeavenlyJourney({ moving, navigate }: Props) {
   const marker = useRef<HTMLDivElement>(null);
   const navigation = useRef<HTMLElement>(null);
   const progress = useRef(0);
+  const contact = useRef({ chapter: 0, direction: 1 as 1 | -1 });
   const [chapter, setChapter] = useState(0);
   const { scrollYProgress } = useScroll({ target: section, offset: ['start start', 'end end'] });
   const renderPath = useCallback((value: number) => {
+    if (value !== progress.current) contact.current.direction = value > progress.current ? 1 : -1;
     progress.current = value;
     const node = panorama.current;
     if (!node) return;
-    const geometry = journeyGeometry(value, node.clientWidth, skyJourney.length);
+    const guardian = node.closest('.sky-app')?.querySelector<HTMLElement>('.sky-realm-guardian');
+    const geometry = journeyGeometry(value, node.clientWidth, skyJourney.length,
+      { ...contact.current, guardianWidth: guardian?.offsetWidth || undefined });
+    contact.current.chapter = geometry.chapter;
     node.style.setProperty('--chapter-step', `${geometry.step}px`);
     node.style.setProperty('--track-width', `${geometry.trackWidth}px`);
     if (bridge.current) bridge.current.style.transform = `translate3d(${geometry.offset}px,0,0)`;
@@ -30,6 +35,7 @@ export function HeavenlyJourney({ moving, navigate }: Props) {
     if (marker.current) {
       marker.current.style.left = `${geometry.guardianAnchor}px`;
       marker.current.dataset.progress = String(value);
+      marker.current.dataset.direction = contact.current.direction === 1 ? 'right' : 'left';
     }
     setChapter(geometry.chapter);
   }, []);
