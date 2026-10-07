@@ -64,11 +64,11 @@ education('BVRIT (JNTUH)','2020 - 2024',
 
 section('Experience')
 entry('AI Engineer','Feb 2025 - Jan 2026','Fotos - AI-powered photography workflows','Remote')
-bullet('Deployed computer vision microservices on GCP using TensorFlow, OpenCV, RetinaFace and DeepFace/ArcFace to support face detection, facial analysis and photographic workflows.')
+bullet('Deployed GCP vision microservices with RetinaFace and DeepFace/ArcFace for face, eye and mouth analysis; visually reviewed results on <b>Indian wedding images with 10+ people per image</b>.')
 bullet('Extended photo culling beyond face detection by combining identity clustering, quality/expression scoring, and Qwen2.5-VL served with vLLM, enabling context-aware image assessment and ranking.')
 bullet('Reduced manual editing time by <b>60%</b> with neural preset style transfer; managed deployment, inference APIs, and monitoring.')
 entry('Artificial Intelligence Intern','Jan 2024 - Feb 2024','Navodita InfoTech','Remote')
-bullet('Built a spaCy/NLTK chatbot with transformer-generated responses and an encoder-decoder French-English translator, connecting language-model experiments with practical conversation and translation tasks.')
+bullet('Built a chatbot that preprocesses user messages with spaCy/NLTK and generates responses with a transformer model; developed an encoder-decoder model to translate French text into English.')
 
 section('Selected Projects')
 # Lead with the user's flagship, then two complementary established areas.
@@ -76,7 +76,7 @@ section('Selected Projects')
 project('AgentForge - In Development','Multi-Agent Systems | Python, LangGraph, Groq',[
  'Building a workspace that coordinates <b>eight specialised roles</b> across planning, research, product, marketing, development, testing, review and task management.',
  'Defined task dependencies, shared project state and structured artifacts so specialists receive role-relevant context and hand work between stages.',
- 'Designed separate testing and requirements-review stages, revision loops and human approval gates; the portfolio presents the role architecture while implementation continues.',
+ 'Designed separate testing and requirements-review stages, revision loops and human approval gates.',
 ], 'work/agents/agentforge')
 project('Multimodal Image Analysis','Computer Vision | Qwen2.5-VL, CLIP, YOLO, OpenCV',[
  'Built an image-plus-text quality-assessment pipeline returning <b>structured JSON</b> with quality scores, identified visual drawbacks, and explanations, making model outputs easier to integrate with downstream applications.',
@@ -85,11 +85,11 @@ project('Multimodal Image Analysis','Computer Vision | Qwen2.5-VL, CLIP, YOLO, O
 project('LLM Fine-Tuning &amp; Domain Adaptation','NLP | Qwen3, Hugging Face, PyTorch',[
  'Adapted Qwen3 in two stages: self-supervised continued pretraining on raw text from <b>20+ medical books and research papers</b>, followed by supervised fine-tuning on labelled conversations.',
  'Prepared role-structured, LLM-generated multi-turn examples and trained with a causal language-modeling objective for concise conversational replies; checked behaviour on unseen prompts.',
- 'Ran a separate PEFT query-rewriting study with <b>30 learned prompt tokens</b> on <b>1,000 CANARD-derived examples</b> (900 training / 100 validation), comparing adapted and base-model outputs.',
+ 'Ran a separate PEFT <b>prompt-tuning</b> study with <b>30 learned tokens</b> on <b>1,000 CANARD-derived query-rewriting examples</b> (900 training / 100 validation); validation sequence loss fell from <b>0.964 to 0.914</b> over five epochs.',
 ], 'work/ml-analytics/medical-language')
 
 section('Technical Skills')
-add('<b>Languages:</b> Python, SQL.<br/><b>ML &amp; language:</b> PyTorch, TensorFlow, Hugging Face, CNNs, transformers, fine-tuning, prompt tuning, byte-pair tokenization.<br/><b>Vision &amp; agents:</b> OpenCV, RetinaFace, DeepFace/ArcFace, CLIP, YOLO, LangGraph, Groq.<br/><b>Engineering:</b> FastAPI, vLLM, GCP, Git/GitHub, REST APIs, deployment and monitoring.')
+add('<b>Languages:</b> Python, SQL.<br/><b>ML &amp; language:</b> PyTorch, TensorFlow, scikit-learn, Hugging Face, CNNs, transformers, fine-tuning, prompt tuning, byte-pair tokenization.<br/><b>Vision &amp; agents:</b> OpenCV, RetinaFace, DeepFace/ArcFace, CLIP, YOLO, RAG, LangGraph, LangChain.<br/><b>Engineering:</b> Docker, FastAPI, vLLM, GCP, Git/GitHub, REST APIs, deployment and monitoring.')
 section('Achievements & Certification')
 add('ATVC Innovation Runner-Up (2023) | My Anatomy AI-thon Finalist (2023)<br/>Advanced Data Science &amp; AI Certification - Intellipaat (IIT-Madras)')
 

@@ -19,3 +19,11 @@ The medical workflow (Qwen3, 20+ books/papers, continued pretraining then labell
 The brain-tumour metric remains omitted because the user could not distinguish precision from recall. Unsupported facial-detection accuracy and translator BLEU claims are removed. AgentForge remains in development, with completed architecture work described separately from implementation.
 
 The resume retains three selected projects: AgentForge, Multimodal Image Analysis and LLM Fine-Tuning & Domain Adaptation. Separate notebook studies are described explicitly as such. The portfolio includes two or three entries per collection, with diffusion and neural style transfer grouped under image generation.
+
+## Follow-up wording and metrics
+
+The prompt-tuning result uses the saved cell-44 validation-loss table: 0.964061 at epoch one and 0.913545 at epoch five, rounded to 0.964 and 0.914. Labels copy the full input sequence, so this is validation sequence loss, not a response-only loss, a base-model improvement measurement or a generated-rewrite benchmark. The portfolio explains that distinction.
+
+Docker and scikit-learn are restored from the user's existing skills and ML application work; RAG and LangChain are additionally supported by the supplied retrieval notebook. Docker is not newly attributed to Fotos based solely on GCP usage. Groq remains in project stacks, rather than the general skills list. No new Fotos scale or performance number is inferred.
+
+The user clarified that Fotos results were reviewed on Indian wedding images with 10+ people per image, and that the >99% figure was estimated from visual review rather than measured against labels. Copy includes the image context and visual-review method, but does not present that estimate as detection accuracy.
