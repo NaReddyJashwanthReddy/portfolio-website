@@ -31,9 +31,9 @@ export function WorkRealm({ route, moving, navigate }: { route: WorkRoute; movin
         <h1 tabIndex={-1} data-view-heading>{project.title}</h1>
         <p className="work-lede">{project.line}</p>
         <div className="work-facts"><span>{project.status}</span>{project.period && <span>{project.period}</span>}</div>
-        <div className="work-story"><h2>The question</h2><p>{project.story}</p><h2>The approach</h2><p>{project.approach}</p><h2>What came from it</h2><p>{project.outcome}</p></div>
+        <div className="work-story"><h2>The question</h2><p>{project.story}</p><h2>The approach</h2><p>{project.approach}</p><h2>{project.status === 'In development' ? 'Progress so far' : 'Result'}</h2><p>{project.outcome}</p></div>
         <ul className="work-tags" aria-label="Technologies">{project.tech.map(tag => <li key={tag}>{tag}</li>)}</ul>
-        <div className="work-profile-actions">{project.source && <a href={project.source} target="_blank" rel="noreferrer">View repository <ArrowUpRight size={17} /></a>}<button onClick={() => navigate({ page: 'work', category: category!.id })}><ArrowLeft size={16} /> Back to the collection</button></div>
+        <div className="work-profile-actions">{project.source && <a href={project.source} target="_blank" rel="noreferrer">{project.sourceLabel ?? 'View repository'} <ArrowUpRight size={17} /></a>}<button onClick={() => navigate({ page: 'work', category: category!.id })}><ArrowLeft size={16} /> Back to the collection</button></div>
       </article>
     </div> : <>
       <div className="work-introduction" data-guardian-copy>
@@ -46,7 +46,7 @@ export function WorkRealm({ route, moving, navigate }: { route: WorkRoute; movin
       <DiscCascadeCarousel key={category?.id ?? 'categories'} items={items} className={`work-cascade ${category ? 'work-cascade-cards' : 'work-cascade-medallions'}`} height="100svh" discSize={category ? 'clamp(230px, 26vw, 350px)' : 'clamp(250px, 29vw, 390px)'} shape={category ? 'card' : 'disc'} motionEnabled={moving} spacing={category ? 1.05 : 1.08} rise={.34} depth={.18} yaw={-12} fan={-8} tilt={category ? -3 : -5} roll={0} spin={0} sheen={.16} loop={false} index={category ? projectIndex : categoryIndex} defaultIndex={category ? projectIndex : categoryIndex} onIndexChange={category ? setProjectIndex : setCategoryIndex} onSelect={(_, index) => navigate(category ? { page: 'work', category: category.id, project: category.projects[index].id } : { page: 'work', category: workCategories[index].id })} brand="" indexLabel="" details={false} reviews={false} frame={false} hint="" background="transparent" color="#f4e8ce" ariaLabel={category ? `${category.title} projects` : 'Work categories'} />
       <div className="work-quick-index" aria-label={category ? 'Choose a project' : 'Choose a collection'}>{(category ? category.projects : workCategories).map((item, index) => <button key={item.id} aria-pressed={(category ? projectIndex : categoryIndex) === index} onClick={() => category ? setProjectIndex(index) : setCategoryIndex(index)}><span>{String(index + 1).padStart(2, '0')}</span>{'short' in item ? item.short : item.title}</button>)}</div>
     </>}
-    <footer className="work-footer"><span><Layers size={13} />{project ? category!.id === 'experience' ? 'THE WORK BEHIND THE ROLE' : 'THE IDEA BEHIND THE BUILD' : category ? `${category.projects.length} ${category.id === 'experience' ? 'ROLES' : 'PROJECTS'} · ONE IDEA AT A TIME` : '6 COLLECTIONS · 15 SELECTED ENTRIES'}</span><button onClick={() => navigate({ page: 'journey' })}>Follow my journey <ArrowRight size={16} /></button></footer>
+    <footer className="work-footer"><span><Layers size={13} />{project ? category!.id === 'experience' ? 'THE WORK BEHIND THE ROLE' : 'THE IDEA BEHIND THE BUILD' : category ? `${category.projects.length} ${category.id === 'experience' ? 'ROLES' : 'PROJECTS'} · ONE IDEA AT A TIME` : `${workCategories.length} COLLECTIONS · ${workCategories.reduce((total, item) => total + item.projects.length, 0)} SELECTED ENTRIES`}</span><button onClick={() => navigate({ page: 'journey' })}>Follow my journey <ArrowRight size={16} /></button></footer>
   </section>;
 }
 
