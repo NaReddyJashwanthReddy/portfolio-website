@@ -108,7 +108,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
     const pose = surface(), previous = surface(), target = surface(), cloud = surface();
     const pc = pose.getContext('2d')!, old = previous.getContext('2d')!, tc = target.getContext('2d')!, cc = cloud.getContext('2d')!;
     pc.drawImage(canvas.current!, 0, 0);
-    let poseKey = state.current.bodyKey, changedAt = -10, displayedFrame = state.current.bodyFrame;
+    let poseKey = state.current.bodyKey, changedAt = -10, blendSeconds = .9, displayedFrame = state.current.bodyFrame, poseBlend = 1;
     let lastFire: ReturnType<GuardianTextures['sample']> = null;
     let frame = 0, last = 0, intersecting = true, visible = !document.hidden;
     const pathNode = followJourney ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
@@ -200,9 +200,14 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
         s.bodySeconds = bodySeconds; s.bodyKey = key; s.bodyFrame = displayedFrame;
         if (key !== poseKey) {
           old.clearRect(0, 0, 640, 600); old.drawImage(pose, 0, 0);
+          // Journey switches poses with scroll, so finish the blend promptly.
+          // Start from the visible pose even if a reversal interrupts a fade.
+          blendSeconds = pathNode && !command.current.entering && ['idle', 'left', 'right'].includes(key)
+            && ['idle', 'left', 'right'].includes(poseKey) ? .22 : .9;
           changedAt = poseKey ? s.time : -10; poseKey = key;
         }
-        const mix = command.current.moving ? ease(clamp((s.time - changedAt) / .9, 0, 1)) : 1;
+        const mix = command.current.moving ? ease(clamp((s.time - changedAt) / blendSeconds, 0, 1)) : 1;
+        poseBlend = mix;
         pc.clearRect(0, 0, 640, 600); pc.save();
         // Add contributions to avoid the opacity dip of two source-over fades.
         pc.globalAlpha = 1 - mix; pc.drawImage(previous, 0, 0);
@@ -253,6 +258,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
         }
       } else lastFire = null;
       Object.assign(button.dataset, { phase: held ? 'hover' : s.phase, frame: String(displayedFrame), body: poseKey,
+        poseBlend: poseBlend.toFixed(3), blendSeconds: String(blendSeconds),
         form: s.form, direction: side, flight: s.mode, target: `${s.target.x.toFixed(1)},${s.target.y.toFixed(1)}`,
         cloud: cloudClip ?? 'none', guided: String(command.current.followJourney && !command.current.entering), pages: String(cache.count) });
       if (centered) {

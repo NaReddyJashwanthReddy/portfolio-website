@@ -90,3 +90,8 @@ final result: passed
 
 - Journey now uses the existing breathing idle animation after scrolling stops, with the existing smooth pose crossfade. Scrolling immediately restores left/right travel according to direction. The complete cloud remains beneath the dragon; the scene still follows scroll directly, and hover remains disabled.
 - Production build and direct-scroll regression passed. Private desktop, phone and delayed-manifest checks confirmed that the idle body frames keep breathing while the scene stays stationary, both directional poses resume on scrolling, and pause/resume and page navigation remain usable.
+
+## Journey pose responsiveness — 8 October 2026
+
+- Shortened Journey's idle/left/right pose blend from 900 ms to 220 ms. Interrupted blends still start from the currently visible pose, with eased additive alpha blending to avoid flashes. The scroll position remains immediate, and the cloud stays present.
+- Build and direct-scroll regression passed. Private desktop/phone checks observed intermediate eased frames and complete idle/travel blends within a 420 ms wall-clock budget in both directions, with no blank canvas frames or runtime errors.
