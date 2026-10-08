@@ -1,0 +1,54 @@
+.sky-app.sky-hybrid-theme { --realm-gold:#e6bc68; --realm-crimson:#a61d38; --realm-obsidian:#17131d; }
+.sky-hybrid-theme .realm-atmosphere { position:fixed; inset:0; z-index:3; pointer-events:none; overflow:hidden; }
+.sky-hybrid-theme .realm-cloud-light,.sky-hybrid-theme .realm-abyss-light { position:absolute; inset:0; pointer-events:none; }
+.sky-hybrid-theme .realm-cloud-light { background:radial-gradient(ellipse at 12% 62%,#fff1c508,transparent 48%); }
+.sky-hybrid-theme .realm-abyss-light { background:radial-gradient(ellipse at 94% 32%,#8e102319,transparent 47%); }
+.sky-hybrid-theme .realm-cloud-drift { position:absolute; left:-10%; bottom:8%; width:120%; height:21%; background:radial-gradient(ellipse at 27% 72%,#ffeeca12,transparent 50%),radial-gradient(ellipse at 85% 36%,#2b142c10,transparent 43%); animation:realm-cloud-crossing 38s ease-in-out infinite alternate; }
+.sky-hybrid-theme .realm-ember { position:absolute; width:3px; height:3px; opacity:0; border-radius:50%; animation:realm-ember-drift 18s ease-in-out infinite; }
+.sky-hybrid-theme .realm-ember-gold { background:#e5be76; box-shadow:0 0 6px 1px #ffd58a60; }
+.sky-hybrid-theme .realm-ember-dark { height:4px; background:#21101b; box-shadow:0 0 3px 1px #b1254166; border:1px solid #b1254170; }
+.sky-hybrid-theme .realm-atmosphere-home .realm-ember { max-height:3px; }
+.sky-hybrid-theme .realm-atmosphere-work,.sky-hybrid-theme .realm-atmosphere-contact { opacity:.7; }
+.sky-hybrid-theme .sky-realm-motes { display:none; }
+.sky-hybrid-theme .sky-realm-guardian canvas {
+  filter:drop-shadow(0 10px 14px #433f3022) drop-shadow(0 0 8px rgba(243,196,89,var(--guardian-gold-glow,0))) drop-shadow(0 0 4px rgba(157,25,54,var(--guardian-crimson-glow,0)));
+}
+.sky-app.sky-hybrid-theme:not(.sky-inside) .sky-header { background:linear-gradient(180deg,#fff4e342,transparent); }
+.sky-app.sky-hybrid-theme:not(.sky-inside) .sky-header nav a { color:#fff0d6; text-shadow:0 1px 5px #15101cbf; }
+.sky-app.sky-hybrid-theme:not(.sky-inside) .sky-motion-button { background:#fff0dac9; color:#302328; border-color:#ecd5a944; }
+.sky-app.sky-hybrid-theme .sky-heavenly-realm .sky-primary { background:#33262b; border-color:#886f51; box-shadow:0 8px 24px #23121f20; }
+.sky-app.sky-hybrid-theme .sky-heavenly-realm .sky-primary:hover { background:#513237; }
+.sky-app.sky-hybrid-theme .sky-heavenly-realm .sky-realm-light { background:radial-gradient(ellipse at 17% 83%,#fff3e5ef 0%,#fff3e5bb 27%,#fff3e543 47%,transparent 72%),linear-gradient(0deg,#22162299,transparent 13%); }
+.sky-hybrid-theme .sky-realm-mist-far { opacity:.07; }
+.sky-app.sky-hybrid-theme .work-realm { background:#17131b; }
+.sky-app.sky-hybrid-theme .work-world { filter:brightness(.52) saturate(.95); }
+.sky-app.sky-hybrid-theme .work-world-shade { background:linear-gradient(90deg,#15121bee 0%,#16121bd4 36%,#16121b66 77%,#27102080); }
+.sky-app.sky-hybrid-theme .work-border { border-color:#c4a06344; box-shadow:inset -1px 0 0 #7d142522; }
+.sky-app.sky-hybrid-theme .work-open { background:#e0c18c; color:#251a22; }
+.sky-app.sky-hybrid-theme .work-cascade .dcc-btn,.sky-app.sky-hybrid-theme .work-quick-index button { background:#1b1420ef; }
+.sky-app.sky-hybrid-theme .work-quick-index button[aria-pressed=true] { background:#483039; }
+.sky-app.sky-hybrid-theme .heavenly-journey { background:#18141e; }
+.sky-app.sky-hybrid-theme .journey-scenery { opacity:.46; }
+.sky-app.sky-hybrid-theme .journey-scene-veil { background:linear-gradient(90deg,#18141e87,#18141e9e 45%,#23131eb0); }
+.sky-app.sky-hybrid-theme .journey-chapter-copy { text-shadow:0 1px 8px #100d16; }
+.sky-app.sky-hybrid-theme .journey-stem { background:linear-gradient(#d9b87888,#97344855); }
+.sky-app.sky-hybrid-theme .journey-chapter-nav button[aria-current] { background:#75405029; }
+.sky-app.sky-hybrid-theme .heavenly-contact { background:#18141e; }
+.sky-app.sky-hybrid-theme .contact-scene-veil { background:linear-gradient(90deg,#15111aaa 0%,#16121b5c 40%,transparent 76%); }
+.sky-app.sky-hybrid-theme .contact-primary { color:#2c1c24; }
+.sky-app.sky-hybrid-theme .contact-context span { color:#c7bac4; }
+.sky-app.sky-hybrid-theme .sky-header-dark { background:linear-gradient(#17131dea,transparent); }
+.sky-hybrid-theme.sky-entering .realm-atmosphere { opacity:0; transition:opacity .3s; }
+.sky-hybrid-theme.sky-journey-active:has(.sky-realm-guardian[data-guided="true"][data-phase="idle"]) .realm-atmosphere * { animation-play-state:paused; }
+@keyframes realm-ember-drift { 0%,100% { opacity:0; transform:translate3d(0,14px,0) rotate(-20deg); } 28%,60% { opacity:.58; } 82% { opacity:0; transform:translate3d(-22px,-86px,0) rotate(30deg); } }
+@keyframes realm-cloud-crossing { from { transform:translate3d(-3%,0,0); } to { transform:translate3d(3%,-4%,0); } }
+@media(max-width:760px) {
+  .sky-app.sky-hybrid-theme:not(.sky-inside) .sky-header { background:linear-gradient(#fff3e6ed,#fff3e674,transparent); }
+  .sky-app.sky-hybrid-theme:not(.sky-inside) .sky-header nav a { color:#30232c; text-shadow:none; }
+  .sky-app.sky-hybrid-theme .sky-heavenly-realm .sky-garden-background { object-position:61% center; }
+  .sky-app.sky-hybrid-theme .sky-heavenly-realm .sky-realm-light { background:linear-gradient(180deg,#fff3e546 0%,transparent 31%,#fff3e5de 58%,#fff3e5ef 89%,#24172a99 100%); }
+  .sky-app.sky-hybrid-theme .contact-scene-veil { background:#17131dcc; }
+  .sky-hybrid-theme .realm-atmosphere .realm-ember:nth-child(even) { display:none; }
+  .sky-hybrid-theme .realm-abyss-light { background:radial-gradient(ellipse at 94% 22%,#8e102311,transparent 47%); }
+}
+@media(prefers-reduced-motion:reduce) { .sky-hybrid-theme .realm-atmosphere * { animation:none!important; } }

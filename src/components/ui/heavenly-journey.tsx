@@ -68,7 +68,7 @@ export function HeavenlyJourney({ moving, navigate }: Props) {
   };
   return <section ref={section} className="heavenly-journey" id="journey" aria-label="My journey through education and AI engineering">
     <div className="journey-viewport">
-      <img className="journey-scenery" src="/assets/skygarden/heavenly-sky-v2.webp" alt="" />
+      <img className="journey-scenery" src="/assets/skygarden/heavenly-demonic-sky.webp" alt="" />
       <div className="journey-scene-veil" />
       <div className="journey-heading">
         <div><p className="realm-eyebrow">03 / THE JOURNEY</p><h1 data-view-heading tabIndex={-1}>A path made of <em>questions.</em></h1></div>

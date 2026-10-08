@@ -17,7 +17,7 @@ export function WorkRealm({ route, moving, navigate }: { route: WorkRoute; movin
   const open = () => navigate(category ? { page: 'work', category: category.id, project: selectedProject.id } : { page: 'work', category: selectedCategory.id });
   const items = category ? category.projects.map((item, index) => ({ title: item.title, src: artwork(category.art), label: item.title, fine: `${String(index + 1).padStart(2, '0')} / ${item.status}`, alt: '' })) : workCategories.map((item, index) => ({ title: item.title, src: artwork(item.art), label: item.short, fine: `${String(index + 1).padStart(2, '0')} / ${item.projects.length} entries`, alt: '' }));
   return <section className={`work-realm ${category ? 'work-collection' : ''} ${project ? 'work-profile' : ''}`} aria-label="Work archive">
-    <img className="work-world" src="/assets/skygarden/heavenly-sky-v2.webp" alt="" />
+    <img className="work-world" src="/assets/skygarden/heavenly-demonic-sky.webp" alt="" />
     <div className="work-world-shade" />
     <div className="work-border" aria-hidden="true" />
     <nav className="work-breadcrumb" aria-label="Work breadcrumb">

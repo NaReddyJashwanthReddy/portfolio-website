@@ -6,10 +6,12 @@ import { HeavenlyJourney } from './components/ui/heavenly-journey';
 import { HeavenlyContact } from './components/ui/heavenly-contact';
 import type { DragonModelInfo } from './components/ui/dragon-rig';
 import { RealmGuardian } from './components/ui/realm-guardian';
+import { RealmAtmosphere } from './components/ui/realm-atmosphere';
 import { DragonSmokeTransition } from './components/ui/dragon-smoke-transition';
 import type { Point } from './components/ui/guardian-routes';
 import './skygarden.css';
 import './heavenly-realm.css';
+import './hybrid-realm.css';
 import { WorkRealm } from './components/ui/work-realm';
 import { parseRoute, routeHash, type WorkRoute } from './data/work-catalog';
 
@@ -45,7 +47,7 @@ export default function SkygardenPortfolio() {
   const onReady = useCallback((info: DragonModelInfo) => { setModelInfo(info); setModelError(''); }, []);
   const onError = useCallback((message: string) => { setModelError(message); setModelInfo(null); }, []);
   useEffect(() => {
-    document.title = 'Heavenly Realm · Jashwanth Reddy';
+    document.title = 'Heavenly Demonic Realm · Jashwanth Reddy';
 
     return () => { timers.current.forEach(clearTimeout); if (entranceFallback.current) clearTimeout(entranceFallback.current); if (objectUrl.current) URL.revokeObjectURL(objectUrl.current); };
   }, []);
@@ -105,7 +107,7 @@ export default function SkygardenPortfolio() {
   useEffect(() => {
     if (transitioning) return;
     const frame = requestAnimationFrame(() => document.querySelector<HTMLElement>('[data-view-heading], #sky-main h1, #sky-main h2')?.focus({ preventScroll: true }));
-    document.title = `${view.page === 'home' ? 'Heavenly Realm' : view.page === 'work' ? 'Work Archive' : view.page === 'journey' ? 'Journey' : 'Contact'}  /  Jashwanth Reddy`;
+    document.title = `${view.page === 'home' ? 'Heavenly Demonic Realm' : view.page === 'work' ? 'Work Archive' : view.page === 'journey' ? 'Journey' : 'Contact'}  /  Jashwanth Reddy`;
     return () => cancelAnimationFrame(frame);
   }, [view, transitioning]);
   const goHome = () => navigate({ page: 'home' });
@@ -115,11 +117,12 @@ export default function SkygardenPortfolio() {
     if (objectUrl.current) URL.revokeObjectURL(objectUrl.current);
     objectUrl.current = URL.createObjectURL(file); setModelInfo(null); setModelError(''); setClip(''); setModelUrl(objectUrl.current);
   };
-  return <div className={`sky-app ${moving ? '' : 'sky-resting'} ${inside ? 'sky-inside' : ''} ${view.page === 'journey' ? 'sky-journey-active' : ''} ${transitioning ? 'sky-entering' : ''}`}>
+  return <div className={`sky-app sky-hybrid-theme ${moving ? '' : 'sky-resting'} ${inside ? 'sky-inside' : ''} ${view.page === 'journey' ? 'sky-journey-active' : ''} ${transitioning ? 'sky-entering' : ''}`}>
     <a className="sky-skip" href="#sky-main" onClick={event => { event.preventDefault(); document.getElementById("sky-main")?.focus(); }}>Skip to content</a>
     <header className={`sky-header ${inside ? 'sky-header-dark' : ''}`}><button className="sky-brand" onClick={goHome} aria-label="Jashwanth Reddy home"><img src={`${assets}signature-transparent.png`} alt="Gold dragon signature" /><span>Jashwanth.</span></button><AnimatedNavigation currentId={view.page} moving={moving} items={[{ id: 'work', label: 'Work' }, { id: 'journey', label: 'Journey' }, { id: 'contact', label: 'Contact' }]} onNavigate={navigate} /><button className="sky-motion-button" aria-label={moving ? 'Pause motion' : 'Resume motion'} aria-pressed={!moving} onClick={() => setPaused(!paused)}>{moving ? <Pause size={16} /> : <Play size={16} />}</button></header>
+    <RealmAtmosphere page={view.page} />
     <main id="sky-main" tabIndex={-1} aria-busy={transitioning} inert={transitioning}>
-      {!inside && <section className="sky-garden sky-heavenly-realm" aria-label="Heavenly realm landing scene"><motion.img className="sky-scene-image sky-garden-background" src={`${assets}heavenly-sky-v2.webp`} alt="Golden palaces on floating islands above an open sea of sunrise clouds and waterfalls" style={{ x: sceneX, y: sceneY }} fetchPriority="high" />
+      {!inside && <section className="sky-garden sky-heavenly-realm" aria-label="Heavenly and demonic realm landing scene"><motion.img className="sky-scene-image sky-garden-background" src={`${assets}heavenly-demonic-sky.webp`} alt="Golden palaces and sunrise clouds blending into obsidian floating ruins with crimson light" style={{ x: sceneX, y: sceneY }} fetchPriority="high" />
         <div className="sky-realm-light" aria-hidden="true" />
         <div className="sky-realm-mist sky-realm-mist-near" aria-hidden="true" />
         <div className="sky-realm-mist sky-realm-mist-far" aria-hidden="true" />
@@ -130,7 +133,7 @@ export default function SkygardenPortfolio() {
           <p className="sky-intro-name">I’m Jashwanth Reddy.</p><p className="sky-intro">I turn questions into AI systems.<br />Welcome to my corner of the clouds.</p>
           <div className="sky-actions"><button ref={entrance} className="sky-button sky-primary" onClick={() => navigate('work')} disabled={transitioning}>Explore my work <ArrowRight size={18} /></button><a className="sky-realm-resume" href="/resume.pdf" download>Resume <Download size={16} /></a></div>
         </motion.div>
-        <div className="sky-realm-footer"><span>01 / THE HEAVENLY REALM</span><span className="sky-guardian-hint">A guardian with a mind of its own.</span><button disabled={transitioning} onClick={() => navigate('work')}>Discover what’s beyond <ArrowRight size={15} /></button></div>
+        <div className="sky-realm-footer"><span>01 / THE HEAVENLY DEMONIC REALM</span><span className="sky-guardian-hint">A guardian with a mind of its own.</span><button disabled={transitioning} onClick={() => navigate('work')}>Discover what’s beyond <ArrowRight size={15} /></button></div>
       </section>}
       {view.page === 'work' && <WorkRealm key={view.category ?? 'work'} route={view} moving={moving} navigate={navigate} />}
       {view.page === 'journey' && <HeavenlyJourney moving={moving} navigate={navigate} />}
@@ -147,7 +150,7 @@ export default function SkygardenPortfolio() {
         if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
         if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
       }
-    }}><button className="sky-close" onClick={() => setNotes(false)} aria-label="Close preview notes" autoFocus><X size={22} /></button><p className="sky-eyebrow">DESIGN PREVIEW</p><h2 id="sky-notes-title">A world in the making.</h2><p>The heavenly realm has a roaming guardian: it breathes at rest, summons clouds to travel, and turns toward visitors who greet it. To enter the portfolio, the dragon comes to the center and breathes black smoke across the screen, revealing the work archive and the journey beyond.</p>{modelUrl && !modelError && <Suspense fallback={null}><DragonRig url={modelUrl} moving={moving} clip={clip} onReady={onReady} onError={onError} /></Suspense>}<label className="sky-model-upload"><Upload size={18} /> Load a dragon GLB<input type="file" accept=".glb,model/gltf-binary" onChange={event => { loadModel(event.target.files?.[0]); event.target.value = ''; }} /></label><p className="sky-fine-print">The file stays on this device. Use a GLB with embedded textures; animations and head-bone tracking depend on the supplied rig.</p><div role="status" className="sky-model-status">{modelError || (modelInfo ? `${modelInfo.bones} bones · ${modelInfo.animations.length} animation clips · ${modelInfo.head ? 'head tracking available' : 'no named head found'}` : modelUrl ? 'Loading model…' : 'No 3D model connected yet.')}</div>{modelInfo && modelInfo.animations.length > 0 && <label className="sky-clip-select">Animation<select value={clip || modelInfo.animations.find(name => /idle|breath|rest/i.test(name)) || modelInfo.animations[0]} onChange={event => setClip(event.target.value)}>{modelInfo.animations.map(name => <option key={name}>{name}</option>)}</select></label>}{modelUrl && <button className="sky-text-link" onClick={() => { setModelUrl(null); setModelInfo(null); setModelError(''); if (objectUrl.current) { URL.revokeObjectURL(objectUrl.current); objectUrl.current = null; } }}>Return to artwork <RotateCcw size={16} /></button>}<button className="sky-button sky-primary" onClick={() => setNotes(false)}>Explore the preview <ArrowRight size={17} /></button></div></motion.div>}</AnimatePresence>
+    }}><button className="sky-close" onClick={() => setNotes(false)} aria-label="Close preview notes" autoFocus><X size={22} /></button><p className="sky-eyebrow">DESIGN PREVIEW</p><h2 id="sky-notes-title">A world in the making.</h2><p>The heavenly and demonic realms share a roaming guardian: it breathes at rest, summons clouds to travel, and turns toward visitors who greet it. To enter the portfolio, the dragon comes to the center and breathes black flames with gold and crimson light across the screen, revealing the work archive and the journey beyond.</p>{modelUrl && !modelError && <Suspense fallback={null}><DragonRig url={modelUrl} moving={moving} clip={clip} onReady={onReady} onError={onError} /></Suspense>}<label className="sky-model-upload"><Upload size={18} /> Load a dragon GLB<input type="file" accept=".glb,model/gltf-binary" onChange={event => { loadModel(event.target.files?.[0]); event.target.value = ''; }} /></label><p className="sky-fine-print">The file stays on this device. Use a GLB with embedded textures; animations and head-bone tracking depend on the supplied rig.</p><div role="status" className="sky-model-status">{modelError || (modelInfo ? `${modelInfo.bones} bones · ${modelInfo.animations.length} animation clips · ${modelInfo.head ? 'head tracking available' : 'no named head found'}` : modelUrl ? 'Loading model…' : 'No 3D model connected yet.')}</div>{modelInfo && modelInfo.animations.length > 0 && <label className="sky-clip-select">Animation<select value={clip || modelInfo.animations.find(name => /idle|breath|rest/i.test(name)) || modelInfo.animations[0]} onChange={event => setClip(event.target.value)}>{modelInfo.animations.map(name => <option key={name}>{name}</option>)}</select></label>}{modelUrl && <button className="sky-text-link" onClick={() => { setModelUrl(null); setModelInfo(null); setModelError(''); if (objectUrl.current) { URL.revokeObjectURL(objectUrl.current); objectUrl.current = null; } }}>Return to artwork <RotateCcw size={16} /></button>}<button className="sky-button sky-primary" onClick={() => setNotes(false)}>Explore the preview <ArrowRight size={17} /></button></div></motion.div>}</AnimatePresence>
   </div>;
 }
 

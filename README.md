@@ -1,6 +1,6 @@
 # Jashwanth Reddy - AI Portfolio
 
-A React/TypeScript portfolio with a heavenly realm, an animated dragon guardian, a categorized Work archive, a scroll-driven Journey bridge and Contact links.
+A React/TypeScript portfolio with a blended heavenly and demonic realm, an animated dragon guardian, a categorized Work archive, a scroll-driven Journey bridge and Contact links.
 
 ## Local development
 
@@ -16,6 +16,7 @@ Open http://127.0.0.1:5173/. React 19, TypeScript, Vite, Tailwind, Framer Motion
 
 - `src/SkygardenPortfolio.tsx`: root navigation, landing and dragon-breath transitions. Black flames with gold edges and crimson veins spread from the muzzle into a full-screen veil before the next route is revealed.
 - `src/components/ui/realm-guardian.tsx`: the desktop companion's finalized body/cloud motions, five-second hover greeting, black/gold/crimson breath, human transformation and drag controls. Double-click or double-tap to transform; Enter/Space also work. Roaming remembers recent destinations and prefers less-visited regions.
+- `src/components/ui/realm-atmosphere.tsx` and `src/hybrid-realm.css`: golden cloud light, obsidian/crimson accents and sparse drifting embers across Home, Work, Journey and Contact. The native guardian has subtle breathing light and gold/crimson transformation curls. Pause/reduced motion stop the atmosphere; Journey also holds it at rest. Generated hybrid scenery lives in `public/assets/skygarden/heavenly-demonic-sky.webp` and `public/assets/journey/heavenly-demonic-observatory.webp`.
 - `src/components/ui/guardian-animation.ts`: lazy texture decoding with an eight-page cache and a registered poster fallback. Separate desktop/mobile WebP pages in `public/assets/skygarden/guardian/v2` retain the completed Flowframes timings. `scripts/export-guardian-assets.py` regenerates these from local companion source assets; run `scripts/export-guardian-flames.py` afterward to apply the finished black/gold/crimson breath. The flame exporter validates the 410 RGBA frames and preserves body/cloud textures and muzzle registration. Regeneration is not part of deployment.
 - `src/components/ui/work-realm.tsx` and `src/data/work-catalog.ts`: seven categories and seventeen selected career/project entries.
 - `src/components/ui/heavenly-journey.tsx` and `journey-motion.ts`: alternating career chapters along a heavenly bridge. The dragon rides a complete cloud and the scene follows the scrollbar directly, without a formation delay or queued catch-up travel. Journey disables greetings, uses directional poses during scrolling and smoothly returns to the breathing idle animation at rest. Chapter buttons work with motion paused.

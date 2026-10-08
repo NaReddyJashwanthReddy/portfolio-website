@@ -19,7 +19,7 @@ export function HeavenlyContact({ moving, navigate, onNotes }: Props) {
     } catch { setCopyState('manual'); }
   };
   return <section className="heavenly-contact" id="contact">
-    <img className="contact-scenery" src="/assets/journey/contact-observatory.webp" alt="A quiet golden observatory and writing desk above the clouds" />
+    <img className="contact-scenery" src="/assets/journey/heavenly-demonic-observatory.webp" alt="An ivory and gold observatory overlooking bright cloud palaces and distant obsidian ruins lit with crimson" />
     <div className="contact-scene-veil" />
     <motion.div className="contact-content" data-guardian-copy initial={{ opacity: 0, y: moving ? 18 : 0 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: moving ? .75 : 0 }}>
       <p className="realm-eyebrow">04 / THE NEXT CHAPTER</p>

@@ -223,6 +223,11 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       if (cloudClip) { drawClip(cc, cloudClip, s.elapsed, s.right, false); context.drawImage(cloud, 0, 0); }
       else cc.clearRect(0, 0, 640, 600);
       context.drawImage(pose, 0, 0);
+      // Breathing light stays outside the pixels used for registered body poses.
+      const glow = s.form === 'dragon' && s.phase === 'idle' && command.current.moving
+        ? .13 + (Math.sin(s.time * Math.PI / 2.4) + 1) * .09 : 0;
+      button.style.setProperty('--guardian-gold-glow', String(glow));
+      button.style.setProperty('--guardian-crimson-glow', String(glow * .32));
       if (s.time - s.transformAt < 1.8 && command.current.moving) {
         const t = (s.time - s.transformAt) / 1.8, strength = Math.sin(t * Math.PI);
         context.save(); context.globalAlpha = strength * .65;
@@ -230,8 +235,13 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
           const angle = i * Math.PI / 6 + t * 3, radius = 55 + t * 110;
           const x = 320 + Math.cos(angle) * radius, y = 270 + Math.sin(angle) * radius;
           const mist = context.createRadialGradient(x, y, 0, x, y, 80);
-          mist.addColorStop(0, i % 3 ? '#150e19' : '#79051e'); mist.addColorStop(1, '#150e1900');
+          const gold = i % 3 === 0;
+          mist.addColorStop(0, gold ? '#f0c477ad' : i % 3 === 1 ? '#a41b4290' : '#18101dc0');
+          mist.addColorStop(1, gold ? '#f0c47700' : '#a41b4200');
           context.fillStyle = mist; context.fillRect(x - 80, y - 80, 160, 160);
+          context.beginPath(); context.arc(320, 270, radius, angle - .22, angle + .07);
+          context.strokeStyle = gold ? '#ffe3a9' : '#ad2448'; context.lineWidth = gold ? 1.8 : 1.1;
+          context.stroke();
         }
         context.restore();
       }
