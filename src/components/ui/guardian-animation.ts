@@ -38,8 +38,10 @@ export class GuardianTextures {
     const image = this.pages.get(file);
     if (image) { this.pages.delete(file); this.pages.set(file, image); }
     else void this.load(file).catch(() => {});
-    const next = page + 1 < spec.pages.length ? page + 1 : spec.loop ? 0 : page;
-    if (next !== page) void this.load(spec.pages[next]).catch(() => {});
+    for (let ahead = 1; ahead <= 2; ahead++) {
+      const next = page + ahead < spec.pages.length ? page + ahead : spec.loop ? (page + ahead) % spec.pages.length : page;
+      if (next !== page) void this.load(spec.pages[next]).catch(() => {});
+    }
     if (!image) return null;
     const slot = frame % this.manifest.pageFrames;
     return { image, frame, spec, sx: slot % this.manifest.columns * spec.width, sy: Math.floor(slot / this.manifest.columns) * spec.height };

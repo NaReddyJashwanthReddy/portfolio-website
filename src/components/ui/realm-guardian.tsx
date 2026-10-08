@@ -25,6 +25,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
     position: { x: 0, y: 0 }, from: { x: 0, y: 0 }, target: { x: 0, y: 0 }, right: false,
     opacity: 1, initialized: false, memory: roamingMemory(), bend: 0, scale: 1, mode: 'diagonal' as FlightKind,
     form: 'dragon' as 'dragon' | 'human', nextForm: 70, nextBreath: 24, transformAt: -10,
+    bodyKey: '', bodySeconds: 0, bodyFrame: 0,
     pathProgress: -1, pathTravelUntil: 0 });
 
   useEffect(() => {
@@ -105,19 +106,19 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
     const pose = surface(), previous = surface(), target = surface(), cloud = surface();
     const pc = pose.getContext('2d')!, old = previous.getContext('2d')!, tc = target.getContext('2d')!, cc = cloud.getContext('2d')!;
     pc.drawImage(canvas.current!, 0, 0);
-    let poseKey = '', changedAt = -10, displayedFrame = 0;
+    let poseKey = state.current.bodyKey, changedAt = -10, displayedFrame = state.current.bodyFrame;
     let lastFire: ReturnType<GuardianTextures['sample']> = null;
     let frame = 0, last = 0, intersecting = true, visible = !document.hidden;
     state.current.pathProgress = -1;
     const pathNode = followJourney ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
     const copyNode = host.closest('.sky-app')?.querySelector('[data-guardian-copy], .sky-garden-copy');
-    const drawClip = (ctx: CanvasRenderingContext2D, clip: GuardianClip, seconds: number, mirror = false) => {
+    const drawClip = (ctx: CanvasRenderingContext2D, clip: GuardianClip, seconds: number, mirror = false, trackFrame = true) => {
       const sample = cache.sample(clip, seconds); if (!sample) return false;
       const { image, spec, sx, sy } = sample;
       ctx.clearRect(0, 0, 640, 600); ctx.save();
       if (mirror) { ctx.translate(640, 0); ctx.scale(-1, 1); }
       ctx.drawImage(image, sx, sy, spec.width, spec.height, ox + spec.left * artScale, oy + spec.top * artScale, spec.width * artScale, spec.height * artScale);
-      ctx.restore(); displayedFrame = sample.frame; return true;
+      ctx.restore(); if (trackFrame) displayedFrame = sample.frame; return true;
     };
     const changeForm = () => {
       const s = state.current;
@@ -182,10 +183,14 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       const walking = ['summon', 'travel', 'settle', 'center'].includes(s.phase);
       const clip: GuardianClip = s.form === 'human' ? 'human' : front ? 'hover' : breathing || walking ? side : 'idle';
       const key = s.phase === 'exhale' && exhale.current ? 'exhale' : clip;
+      // Advance only through decoded body frames. A cold connection must not chase
+      // ever-new pages while the still-loading frame falls further behind the clock.
+      const bodySeconds = key === s.bodyKey ? s.bodySeconds + dt : 0;
       let available = false;
       if (key === 'exhale') { tc.clearRect(0, 0, 640, 600); tc.drawImage(exhale.current!, 32, 0, 576, 432); available = true; }
-      else available = drawClip(tc, clip, s.time);
+      else available = drawClip(tc, clip, bodySeconds);
       if (available) {
+        s.bodySeconds = bodySeconds; s.bodyKey = key; s.bodyFrame = displayedFrame;
         if (key !== poseKey) {
           old.clearRect(0, 0, 640, 600); old.drawImage(pose, 0, 0);
           changedAt = poseKey ? s.time : -10; poseKey = key;
@@ -199,7 +204,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       context.clearRect(0, 0, 640, 600);
       const cloudClip: GuardianClip | null = !front && !pathNode && !breathing && !drag.current?.active
         ? s.phase === 'summon' ? 'cloud_form' : s.phase === 'travel' || s.phase === 'center' ? 'cloud_drift' : s.phase === 'settle' ? 'cloud_dissolve' : null : null;
-      if (cloudClip) { drawClip(cc, cloudClip, s.elapsed, s.right); context.drawImage(cloud, 0, 0); }
+      if (cloudClip) { drawClip(cc, cloudClip, s.elapsed, s.right, false); context.drawImage(cloud, 0, 0); }
       else cc.clearRect(0, 0, 640, 600);
       context.drawImage(pose, 0, 0);
       if (s.time - s.transformAt < 1.8 && command.current.moving) {
