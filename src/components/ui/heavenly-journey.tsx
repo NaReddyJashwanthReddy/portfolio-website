@@ -41,21 +41,19 @@ export function HeavenlyJourney({ moving, navigate }: Props) {
   }, []);
   const requestPath = useCallback((value: number) => {
     if (marker.current) marker.current.dataset.requested = String(value);
-    if (!moving) renderPath(value);
+    renderPath(value);
     window.dispatchEvent(new Event('journey-request'));
-  }, [moving, renderPath]);
+  }, [renderPath]);
   useMotionValueEvent(scrollYProgress, 'change', requestPath);
   useEffect(() => {
     const node = panorama.current;
     if (!node) return;
-    const update = (event: Event) => renderPath((event as CustomEvent<number>).detail);
-    window.addEventListener('journey-progress', update);
     const observer = new ResizeObserver(() => renderPath(progress.current));
     observer.observe(node);
-    renderPath(progress.current);
+    renderPath(scrollYProgress.get());
     if (marker.current) marker.current.dataset.requested = String(scrollYProgress.get());
     window.dispatchEvent(new Event('journey-request'));
-    return () => { observer.disconnect(); window.removeEventListener('journey-progress', update); };
+    return () => observer.disconnect();
   }, [renderPath, scrollYProgress]);
   useEffect(() => {
     const nav = navigation.current;

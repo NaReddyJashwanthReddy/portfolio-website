@@ -78,3 +78,10 @@ final result: passed
 - Journey disables hover, drag and transformation interactions. Right/left travel clips persist through rest and turn with the requested travel direction. Clouds also render beneath the guided dragon; human form never renders clouds on any page.
 - Pure choreography checks cover stationary stages, continuous requests, direction reversal, loading holds and bounded destinations. Private desktop/phone browser checks verify formation and dissolution locks, cloud rendering, forward/right and backward/left travel and rest, disabled hover, reduced-motion seeking and cloud-free human form. TypeScript/Vite and existing asset, roaming, catalogue and bridge geometry checks pass.
 - Visual evidence: `journey-cloud-form-desktop.png`, `journey-cloud-travel-desktop.png` and phone equivalents under `output/portfolio-guardian-qa`.
+
+## Journey immediate scroll correction — 8 October 2026
+
+- Replaced queued formation/travel/dissolution with a complete cloud beneath the Journey dragon. The bridge and chapters now follow scroll progress immediately, including while body/cloud textures decode. Stopping scroll holds the exact scene position; there is no delayed travel to an accumulated target. Other pages retain their cloud formation and dissolution.
+- The Journey cloud animates during scrolling and holds its last frame at rest. The directional pose and disabled hover are preserved, as are chapter contact geometry, mobile layout, pause/reduced-motion seeking, and cloud-free human form.
+- The revised motion regression covers 600 changing scroll positions, reversals, immediate cold-texture progress, rest and endpoints.
+- Private desktop/phone checks confirmed immediate progress on repeated wheel input, no motion after scrolling stops, visible complete clouds, both travel directions, pause/resume and Work navigation. Delaying the guardian manifest by three seconds still allowed the scene to follow scrolling immediately. No browser runtime errors occurred. TypeScript/Vite build and existing bridge/asset checks passed. Visual evidence: `output/portfolio-guardian-qa/journey-immediate-cloud-desktop.png`.

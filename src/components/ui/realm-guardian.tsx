@@ -149,19 +149,12 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
         s.scale = 1 + progress * .16;
         if (s.elapsed >= s.duration) { s.phase = 'exhale'; s.elapsed = 0; centered = true; }
       } else if (s.phase !== 'exhale' && pathNode && command.current.followJourney) {
-        const requested = Number(pathNode.dataset.requested ?? 0), j = s.journey;
-        const journeyCloud = j.phase === 'summon' ? 'cloud_form' : j.phase === 'travel' ? 'cloud_drift' : j.phase === 'settle' ? 'cloud_dissolve' : null;
-        const expectedSide = (j.phase === 'travel' && requested !== j.progress ? requested > j.progress : j.direction === 1) ? 'right' : 'left';
-        // Buffer a complete body/cloud frame before moving the bridge with it.
-        const buffered = !!cache.sample(expectedSide, expectedSide === s.bodyKey ? s.bodySeconds + dt : 0)
-          && (!journeyCloud || !!cache.sample(journeyCloud, j.elapsed + dt));
-        s.journey = command.current.moving ? advanceJourney(j, requested, buffered ? dt : 0)
-          : Number(pathNode.dataset.progress ?? 0) === j.progress ? j
-          : { ...journeyMotion(Number(pathNode.dataset.progress ?? 0)), direction: pathNode.dataset.direction === 'left' ? -1 : 1 };
+        // The scene already follows scroll directly, even while textures load.
+        // Holding a decoded pose must never create a backlog of camera movement.
+        s.journey = advanceJourney(s.journey, Number(pathNode.dataset.progress ?? 0), dt, command.current.moving);
         s.phase = s.journey.phase; s.elapsed = s.journey.elapsed; s.right = s.journey.direction === 1;
         pathNode.dataset.phase = s.phase;
         pathNode.dataset.phaseTime = String(s.elapsed);
-        if (s.journey.progress !== Number(pathNode.dataset.progress)) window.dispatchEvent(new CustomEvent('journey-progress', { detail: s.journey.progress }));
         const rect = pathNode.getBoundingClientRect();
         // Shared feet at 402.4/640 preserve the existing bridge anchor.
         s.position = { x: rect.left, y: rect.top - w.size * .16 };
@@ -217,7 +210,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       }
       context.clearRect(0, 0, 640, 600);
       const cloudClip: GuardianClip | null = s.form === 'dragon' && !front && !breathing && !drag.current?.active
-        ? s.phase === 'summon' ? 'cloud_form' : s.phase === 'travel' || s.phase === 'center' ? 'cloud_drift' : s.phase === 'settle' ? 'cloud_dissolve' : null : null;
+        ? pathNode ? 'cloud_drift' : s.phase === 'summon' ? 'cloud_form' : s.phase === 'travel' || s.phase === 'center' ? 'cloud_drift' : s.phase === 'settle' ? 'cloud_dissolve' : null : null;
       if (cloudClip) { drawClip(cc, cloudClip, s.elapsed, s.right, false); context.drawImage(cloud, 0, 0); }
       else cc.clearRect(0, 0, 640, 600);
       context.drawImage(pose, 0, 0);
