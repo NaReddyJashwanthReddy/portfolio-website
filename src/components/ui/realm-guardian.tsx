@@ -189,21 +189,25 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       const front = held || s.phase === 'exhale' || s.phase === 'center' && s.elapsed / s.duration > .65;
       const walking = ['summon', 'travel', 'settle', 'center'].includes(s.phase);
       const clip: GuardianClip = s.form === 'human' ? 'human' : front ? 'hover' : breathing || walking ? side : 'idle';
-      const key = s.phase === 'exhale' && exhale.current ? 'exhale' : clip;
+      // The idle source faces left; only mirror it after rightward Journey travel.
+      const mirrorIdle = clip === 'idle' && command.current.followJourney && s.right;
+      const key = s.phase === 'exhale' && exhale.current ? 'exhale'
+        : clip === 'idle' && command.current.followJourney ? `idle:${side}` : clip;
       // Advance only through decoded body frames. A cold connection must not chase
       // ever-new pages while the still-loading frame falls further behind the clock.
-      const bodySeconds = key === s.bodyKey ? s.bodySeconds + dt : 0;
+      const sameClip = key === s.bodyKey || clip === 'idle' && s.bodyKey.split(':')[0] === 'idle';
+      const bodySeconds = sameClip ? s.bodySeconds + dt : 0;
       let available = false;
       if (key === 'exhale') { tc.clearRect(0, 0, 640, 600); tc.drawImage(exhale.current!, 32, 0, 576, 432); available = true; }
-      else available = drawClip(tc, clip, bodySeconds);
+      else available = drawClip(tc, clip, bodySeconds, mirrorIdle);
       if (available) {
         s.bodySeconds = bodySeconds; s.bodyKey = key; s.bodyFrame = displayedFrame;
         if (key !== poseKey) {
           old.clearRect(0, 0, 640, 600); old.drawImage(pose, 0, 0);
           // Journey switches poses with scroll, so finish the blend promptly.
           // Start from the visible pose even if a reversal interrupts a fade.
-          blendSeconds = pathNode && !command.current.entering && ['idle', 'left', 'right'].includes(key)
-            && ['idle', 'left', 'right'].includes(poseKey) ? .22 : .9;
+          blendSeconds = pathNode && !command.current.entering && ['idle', 'left', 'right'].includes(key.split(':')[0])
+            && ['idle', 'left', 'right'].includes(poseKey.split(':')[0]) ? .22 : .9;
           changedAt = poseKey ? s.time : -10; poseKey = key;
         }
         const mix = command.current.moving ? ease(clamp((s.time - changedAt) / blendSeconds, 0, 1)) : 1;
@@ -257,7 +261,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
           fx.restore();
         }
       } else lastFire = null;
-      Object.assign(button.dataset, { phase: held ? 'hover' : s.phase, frame: String(displayedFrame), body: poseKey,
+      Object.assign(button.dataset, { phase: held ? 'hover' : s.phase, frame: String(displayedFrame), body: poseKey.split(':')[0], pose: poseKey,
         poseBlend: poseBlend.toFixed(3), blendSeconds: String(blendSeconds),
         form: s.form, direction: side, flight: s.mode, target: `${s.target.x.toFixed(1)},${s.target.y.toFixed(1)}`,
         cloud: cloudClip ?? 'none', guided: String(command.current.followJourney && !command.current.entering), pages: String(cache.count) });

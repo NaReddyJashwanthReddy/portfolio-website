@@ -95,3 +95,8 @@ final result: passed
 
 - Shortened Journey's idle/left/right pose blend from 900 ms to 220 ms. Interrupted blends still start from the currently visible pose, with eased additive alpha blending to avoid flashes. The scroll position remains immediate, and the cloud stays present.
 - Build and direct-scroll regression passed. Private desktop/phone checks observed intermediate eased frames and complete idle/travel blends within a 420 ms wall-clock budget in both directions, with no blank canvas frames or runtime errors.
+
+## Journey idle facing — 8 October 2026
+
+- The idle source faces left. Journey now reflects the idle body horizontally after rightward travel, retaining the original body after leftward travel. Idle pose identity includes direction so reversals blend correctly, and the idle breathing clock continues across a mirrored orientation change. The 220 ms blend and foot registration are preserved.
+- Desktop/phone pixel comparisons confirmed that each resting head matches the correctly oriented source and differs from the opposite orientation. Both-direction fast-blend checks and the production build passed. Evidence: `output/portfolio-guardian-qa/journey-idle-right-desktop.png`, the left-facing equivalent and both mobile variants.
