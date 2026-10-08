@@ -59,3 +59,13 @@ P3: Legacy Spline/Three bundles retain large-chunk warnings; a separate performa
 - [x] Build, meaningful geometry/regression checks and clean console passed.
 
 final result: passed
+
+## Desktop companion port — 8 October 2026
+
+- Imported the finalized 480-frame left/right body loops, 20-frame fuller-mane hover, cloud formation/drift/dissolve, rotating-orb human form and 410-frame black/scarlet flame sequence. Alpha and common foot registration are preserved; clouds retain their source proportions.
+- Added five-second greetings, manual drag/drop, double-click/tap or keyboard transformation, occasional automatic transformation/breath and a planner that avoids the six most recent destination regions. Human poses retain the desktop's increased height, with a narrower silhouette than the dragon.
+- Desktop and phone texture profiles load nearby WebP pages on demand. Decoded page references are limited to eight. Missing pages hold the last complete pose; a manifest failure keeps the registered poster and leaves navigation's existing fallback usable.
+- Existing full-screen smoke navigation and guided journey behaviour remain. Body feet match the bridge marker within one CSS pixel on desktop and phone. Continuous scrolling wakes the renderer without resetting its animation clock.
+- Production TypeScript/Vite build, four regression scripts, 900 new remembered-destination trials, complete atlas-page checks and texture-cache recovery tests passed. Existing optional legacy bundle-size warnings remain.
+- Private Chrome checks covered desktop/phone loading, five-second greeting expiry, human transformation, ambient flame placement and recovery, Work/Journey/Contact smoke navigation, bridge alignment, drag/drop, pause/resume, resizing, reduced motion and a forced manifest failure. No unexpected runtime errors occurred in normal-loading checks.
+- Visual evidence: `output/portfolio-guardian-qa/desktop-hover.png`, `desktop-human.png`, `desktop-fire.png`, `desktop-journey-mid.png`, `production-mobile-travel.png`, `production-mobile-human.png` and `production-mobile-journey.png`. Evidence and intermediate native assets remain local; only web assets are published.

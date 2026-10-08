@@ -1,0 +1,174 @@
+{
+  "version": 2,
+  "profile": "mobile",
+  "width": 316,
+  "height": 228,
+  "bodySize": 240,
+  "feet": 169.5,
+  "columns": 5,
+  "pageFrames": 40,
+  "animations": {
+    "idle": {
+      "frames": 80,
+      "fps": 22.22222222222222,
+      "width": 316,
+      "height": 228,
+      "left": 0,
+      "top": 0,
+      "loop": true,
+      "pages": [
+        "idle-00.webp",
+        "idle-01.webp"
+      ]
+    },
+    "left": {
+      "frames": 480,
+      "fps": 60,
+      "width": 316,
+      "height": 228,
+      "left": 0,
+      "top": 0,
+      "loop": true,
+      "pages": [
+        "left-00.webp",
+        "left-01.webp",
+        "left-02.webp",
+        "left-03.webp",
+        "left-04.webp",
+        "left-05.webp",
+        "left-06.webp",
+        "left-07.webp",
+        "left-08.webp",
+        "left-09.webp",
+        "left-10.webp",
+        "left-11.webp"
+      ]
+    },
+    "right": {
+      "frames": 480,
+      "fps": 60,
+      "width": 316,
+      "height": 228,
+      "left": 0,
+      "top": 0,
+      "loop": true,
+      "pages": [
+        "right-00.webp",
+        "right-01.webp",
+        "right-02.webp",
+        "right-03.webp",
+        "right-04.webp",
+        "right-05.webp",
+        "right-06.webp",
+        "right-07.webp",
+        "right-08.webp",
+        "right-09.webp",
+        "right-10.webp",
+        "right-11.webp"
+      ]
+    },
+    "human": {
+      "frames": 80,
+      "fps": 22.22222222222222,
+      "width": 316,
+      "height": 228,
+      "left": 0,
+      "top": 0,
+      "loop": true,
+      "pages": [
+        "human-00.webp",
+        "human-01.webp"
+      ]
+    },
+    "hover": {
+      "frames": 20,
+      "fps": 22.222222,
+      "width": 316,
+      "height": 228,
+      "left": 0,
+      "top": 0,
+      "loop": true,
+      "pages": [
+        "hover-00.webp"
+      ]
+    },
+    "cloud_form": {
+      "frames": 121,
+      "fps": 60,
+      "width": 264,
+      "height": 103,
+      "left": 26,
+      "top": 129,
+      "loop": false,
+      "pages": [
+        "cloud_form-00.webp",
+        "cloud_form-01.webp",
+        "cloud_form-02.webp",
+        "cloud_form-03.webp"
+      ]
+    },
+    "cloud_drift": {
+      "frames": 480,
+      "fps": 60,
+      "width": 264,
+      "height": 103,
+      "left": 26,
+      "top": 129,
+      "loop": true,
+      "pages": [
+        "cloud_drift-00.webp",
+        "cloud_drift-01.webp",
+        "cloud_drift-02.webp",
+        "cloud_drift-03.webp",
+        "cloud_drift-04.webp",
+        "cloud_drift-05.webp",
+        "cloud_drift-06.webp",
+        "cloud_drift-07.webp",
+        "cloud_drift-08.webp",
+        "cloud_drift-09.webp",
+        "cloud_drift-10.webp",
+        "cloud_drift-11.webp"
+      ]
+    },
+    "cloud_dissolve": {
+      "frames": 121,
+      "fps": 60,
+      "width": 264,
+      "height": 103,
+      "left": 26,
+      "top": 129,
+      "loop": false,
+      "pages": [
+        "cloud_dissolve-00.webp",
+        "cloud_dissolve-01.webp",
+        "cloud_dissolve-02.webp",
+        "cloud_dissolve-03.webp"
+      ]
+    },
+    "fire": {
+      "frames": 410,
+      "fps": 60,
+      "width": 264,
+      "height": 110,
+      "left": 249,
+      "top": 30,
+      "loop": false,
+      "pages": [
+        "fire-00.webp",
+        "fire-01.webp",
+        "fire-02.webp",
+        "fire-03.webp",
+        "fire-04.webp",
+        "fire-05.webp",
+        "fire-06.webp",
+        "fire-07.webp",
+        "fire-08.webp",
+        "fire-09.webp",
+        "fire-10.webp"
+      ]
+    }
+  },
+  "cloudSeconds": 2,
+  "hoverSeconds": 5,
+  "fireSeconds": 6.833333333333333
+}

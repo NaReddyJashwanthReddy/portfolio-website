@@ -15,8 +15,9 @@ Open http://127.0.0.1:5173/. React 19, TypeScript, Vite, Tailwind, Framer Motion
 ## Current application
 
 - `src/SkygardenPortfolio.tsx`: root navigation, landing and dragon-smoke transitions.
-- `src/components/ui/realm-guardian.tsx`: approved breathing/cloud-travel atlases, hover greeting and roaming behavior.
-- `src/components/ui/work-realm.tsx` and `src/data/work-catalog.ts`: six categories and fifteen selected career/project entries.
+- `src/components/ui/realm-guardian.tsx`: the desktop companion's finalized body/cloud motions, five-second hover greeting, black/scarlet breath, human transformation and drag controls. Double-click or double-tap to transform; Enter/Space also work. Roaming remembers recent destinations and prefers less-visited regions.
+- `src/components/ui/guardian-animation.ts`: lazy texture decoding with an eight-page cache and a registered poster fallback. Separate desktop/mobile WebP pages in `public/assets/skygarden/guardian/v2` retain the completed Flowframes timings. `scripts/export-guardian-assets.py` regenerates these from the local companion source assets; regeneration is not part of deployment.
+- `src/components/ui/work-realm.tsx` and `src/data/work-catalog.ts`: seven categories and seventeen selected career/project entries.
 - `src/components/ui/heavenly-journey.tsx`: alternating career chapters along a heavenly bridge. The guardian follows scroll direction; chapter buttons work with motion paused.
 - `src/components/ui/heavenly-contact.tsx`: email composer links, copy-email action, profiles and resume download.
 - `public/resume.pdf`: current downloadable resume. `scripts/jake_resume.py` generates a Jake-inspired draft at `output/pdf/jashwanth_resume_latest.pdf`; set `PORTFOLIO_URL` to the verified production URL. Review the draft before copying it into `public/resume.pdf` and deploying.
@@ -29,6 +30,7 @@ The earlier `/motion` and legacy routes remain available. Asset source attributi
 
 ```sh
 node scripts/test-guardian-routes.mjs
+node scripts/test-guardian-animation.mjs
 node scripts/test-work-catalog.mjs
 node scripts/test-journey-path.mjs
 npm run build

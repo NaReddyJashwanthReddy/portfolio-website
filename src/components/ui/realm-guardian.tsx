@@ -1,239 +1,306 @@
 import { useEffect, useRef, useState } from 'react';
-import { clamp, contain, destination, ease, flightKind, flightPoint, roamBounds } from './guardian-routes';
+import { clamp, contain, ease, flightPoint, rememberedDestination, roamBounds, roamingMemory } from './guardian-routes';
 import type { FlightKind, Point } from './guardian-routes';
+import { GuardianTextures, guardianBase } from './guardian-animation';
+import type { GuardianClip, GuardianManifest } from './guardian-animation';
 
-const ASSETS = '/assets/skygarden/guardian/';
-type Phase = 'idle' | 'summon' | 'travel' | 'settle' | 'center' | 'exhale';
-type Atlas = { image: HTMLImageElement; width: number; height: number; columns: number };
-const between = (min: number, max: number) => min + Math.random() * Math.max(0, max - min);
+type Phase = 'idle' | 'summon' | 'travel' | 'settle' | 'center' | 'exhale' | 'breath-prepare' | 'breath' | 'breath-recover';
+const between = (min: number, max: number) => min + Math.random() * (max - min);
+const surface = () => { const c = document.createElement('canvas'); c.width = 640; c.height = 600; return c; };
 
-/** The guardian chooses its own destinations; the pointer only greets it. */
+/** One companion persists across routes; the journey keeps its bridge choreography. */
 export function RealmGuardian({ moving, entering = false, sceneKey = '', followJourney = false, onCentered }: { moving: boolean; entering?: boolean; sceneKey?: string; followJourney?: boolean; onCentered?: (mouth: Point) => void }) {
-  const stage = useRef<HTMLDivElement>(null);
-  const companion = useRef<HTMLButtonElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
+  const stage = useRef<HTMLDivElement>(null), companion = useRef<HTMLButtonElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null), effects = useRef<HTMLCanvasElement>(null);
+  const [profile] = useState(() => innerWidth < 761 ? 'mobile' : 'desktop');
   const [ready, setReady] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const images = useRef<{ idle: Atlas; travel: Atlas; clouds: Atlas; hover: HTMLImageElement; breath: HTMLImageElement } | null>(null);
-  const command = useRef({ entering, onCentered, followJourney });
-  command.current = { entering, onCentered, followJourney };
-  const greeting = useRef({ pointer: false, focus: false, touch: false });
-  const world = useRef({ width: 0, height: 0, size: 520, copy: { left: 0, right: 0, top: 0, bottom: 0 } });
+  const textures = useRef<GuardianTextures | null>(null), exhale = useRef<HTMLImageElement | null>(null);
+  const command = useRef({ entering, onCentered, followJourney, moving });
+  command.current = { entering, onCentered, followJourney, moving };
+  const wake = useRef(() => {}), transformRequested = useRef(false);
+  const greeting = useRef({ until: 0, pointer: false, focus: false });
+  const drag = useRef<{ id: number; start: Point; origin: Point; active: boolean } | null>(null);
+  const world = useRef({ width: 0, height: 0, size: 520 });
   const state = useRef({ phase: 'idle' as Phase, time: 0, elapsed: 0, wait: 3.5, duration: 6,
     position: { x: 0, y: 0 }, from: { x: 0, y: 0 }, target: { x: 0, y: 0 }, right: false,
-    hover: 0, opacity: 1, initialized: false, recent: [] as Point[], bend: 0, scale: 1, mode: 'diagonal' as FlightKind,
+    opacity: 1, initialized: false, memory: roamingMemory(), bend: 0, scale: 1, mode: 'diagonal' as FlightKind,
+    form: 'dragon' as 'dragon' | 'human', nextForm: 70, nextBreath: 24, transformAt: -10,
     pathProgress: -1, pathTravelUntil: 0 });
 
   useEffect(() => {
-    const s = state.current, w = world.current;
-    if (!entering) {
-      if (s.phase === 'center' || s.phase === 'exhale') { s.phase = 'settle'; s.elapsed = 0; s.scale = 1; s.wait = between(1, 3); }
-      return;
-    }
-    greeting.current = { pointer: false, focus: false, touch: false };
-    s.phase = 'center'; s.elapsed = 0; s.from = { ...s.position };
-    s.target = { x: w.width / 2, y: Math.min(w.height, window.innerHeight) * .57 + w.size * .08 };
-    s.right = s.target.x > s.position.x; s.duration = 1.85;
-  }, [entering]);
+    let cancelled = false;
+    let cache: GuardianTextures | undefined;
+    const base = guardianBase + profile + '/';
+    void (async () => {
+      const response = await fetch(base + 'manifest.json');
+      if (!response.ok) throw new Error('Guardian manifest unavailable');
+      const manifest = await response.json() as GuardianManifest;
+      if (cancelled) return;
+      cache = new GuardianTextures(manifest, base, () => wake.current());
+      await cache.warm('idle');
+      if (cancelled) { cache.dispose(); return; }
+      textures.current = cache; setReady(true);
+      // These may arrive later; the renderer holds the last complete pose meanwhile.
+      void Promise.allSettled(['left', 'right', 'hover'].map(clip => cache!.warm(clip as GuardianClip)));
+      const front = new Image(); front.src = '/assets/skygarden/guardian/exhale-front.webp';
+      void front.decode().then(() => { if (!cancelled) exhale.current = front; }).catch(() => {});
+    })().catch(() => { /* The poster remains visible; navigation has its own fallback. */ });
+    return () => { cancelled = true; cache?.dispose(); textures.current = null; exhale.current = null; };
+  }, [profile]);
 
   useEffect(() => {
-    let cancelled = false;
-    const load = async (name: string) => {
-      const image = new Image(); image.src = `${ASSETS}${name}`;
-      await image.decode(); return image;
-    };
-    Promise.all(['idle-atlas.webp', 'travel-atlas.webp', 'cloud-atlas.webp', 'hover-front.webp', 'exhale-front.webp'].map(load))
-      .then(([idle, travel, clouds, hover, breath]) => {
-        if (cancelled) return;
-        images.current = { idle: { image: idle, width: 400, height: 275, columns: 10 },
-          travel: { image: travel, width: 400, height: 275, columns: 10 },
-          clouds: { image: clouds, width: 320, height: 240, columns: 3 }, hover, breath };
-        setReady(true);
-      }).catch(() => { if (!cancelled) setFailed(true); });
-    return () => { cancelled = true; images.current = null; };
-  }, []);
+    const s = state.current, w = world.current;
+    if (entering) {
+      greeting.current.until = 0; drag.current = null; transformRequested.current = false;
+      s.form = 'dragon'; s.phase = 'center'; s.elapsed = 0; s.from = { ...s.position };
+      s.target = { x: w.width / 2, y: Math.min(w.height, innerHeight) * .57 + w.size * .08 };
+      s.right = s.target.x > s.position.x; s.duration = 1.85;
+    } else if (s.phase === 'center' || s.phase === 'exhale') {
+      s.phase = 'idle'; s.elapsed = 0; s.scale = 1; s.wait = between(1, 3);
+      s.nextBreath = s.time + between(18, 38);
+    }
+    if (followJourney) { s.form = 'dragon'; greeting.current.until = 0; }
+    wake.current();
+  }, [entering, followJourney]);
 
   useEffect(() => {
     const host = stage.current, button = companion.current;
     if (!host || !button) return;
     const measure = () => {
       const box = host.getBoundingClientRect(), size = button.offsetWidth;
-      const copy = host.closest('.sky-app')?.querySelector('[data-guardian-copy], .sky-garden-copy')?.getBoundingClientRect();
-      world.current = { width: box.width, height: box.height, size, copy: {
-        left: (copy?.left ?? 0) - box.left, right: (copy?.right ?? 0) - box.left,
-        top: (copy?.top ?? 0) - box.top - (box.width < 761 ? 0 : 50), bottom: (copy?.bottom ?? 0) - box.top,
-      } };
-      const s = state.current;
-      const w = world.current;
-      const journeyPath = command.current.followJourney && w.width >= 760
+      world.current = { width: box.width, height: box.height, size };
+      const s = state.current, w = world.current;
+      const path = command.current.followJourney && w.width >= 760
         ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
-      if (journeyPath && !command.current.entering) {
-        const path = journeyPath.getBoundingClientRect();
-        // Keep its feet above the bridge deck, matching the guided walking pose.
-        s.position = { x: path.left, y: path.top - size * .16 };
-        s.right = journeyPath.dataset.direction !== 'left';
-        s.initialized = true;
+      if (path && !command.current.entering) {
+        const rect = path.getBoundingClientRect();
+        s.position = { x: rect.left, y: rect.top - size * .16 };
+        s.right = path.dataset.direction !== 'left'; s.initialized = true;
       } else if (!s.initialized) {
-        s.position = { x: w.width < 761 ? w.width * .52 : w.width * .73,
-          y: w.width < 761 ? w.height * .34 : w.height * .42 };
+        s.position = { x: w.width * (w.width < 761 ? .52 : .73), y: w.height * (w.width < 761 ? .34 : .42) };
         s.initialized = true;
       }
-      if (command.current.entering) return;
-      // Resize cancels a destination outside the newly sized scene.
-      s.position = contain(s.position, roamBounds(w.width, w.height, w.size)); s.phase = 'idle'; s.elapsed = 0;
-      s.recent = [];
-      s.from = { ...s.position }; s.target = { ...s.position };
+      if (command.current.entering) {
+        // Rebase when entering changes the journey's sprite size.
+        s.from = { ...s.position }; s.elapsed = 0;
+        s.target = { x: w.width / 2, y: Math.min(w.height, innerHeight) * .57 + size * .08 };
+      } else {
+        if (!path) s.position = contain(s.position, roamBounds(w.width, w.height, size));
+        s.phase = 'idle'; s.elapsed = 0; s.scale = 1;
+        s.from = { ...s.position }; s.target = { ...s.position };
+      }
       button.style.transform = `translate3d(${s.position.x - size / 2}px, ${s.position.y - size * .46875}px, 0)`;
+      wake.current();
     };
-    const observer = new ResizeObserver(measure);
-    observer.observe(host); observer.observe(button);
-    const copy = host.closest('.sky-app')?.querySelector('[data-guardian-copy], .sky-garden-copy');
-    if (copy) observer.observe(copy);
-    measure();
+    const observer = new ResizeObserver(measure); observer.observe(host); observer.observe(button); measure();
     return () => observer.disconnect();
   }, [sceneKey]);
 
   useEffect(() => {
-    const context = canvas.current?.getContext('2d'), button = companion.current, host = stage.current;
-    if (!context || !button || !host || !ready || !images.current) return;
-    const copyNode = host.closest('.sky-app')?.querySelector('[data-guardian-copy], .sky-garden-copy');
-    const pathNode = followJourney ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
+    const context = canvas.current?.getContext('2d'), fx = effects.current?.getContext('2d');
+    const button = companion.current, host = stage.current, cache = textures.current;
+    if (!context || !fx || !button || !host || !ready || !cache) return;
+    const manifest = cache.manifest;
+    const artScale = 768 / manifest.width, ox = (640 - manifest.width * artScale) / 2, oy = 402.4 - manifest.feet * artScale;
+    const pose = surface(), previous = surface(), target = surface(), cloud = surface();
+    const pc = pose.getContext('2d')!, old = previous.getContext('2d')!, tc = target.getContext('2d')!, cc = cloud.getContext('2d')!;
+    pc.drawImage(canvas.current!, 0, 0);
+    let poseKey = '', changedAt = -10, displayedFrame = 0;
+    let lastFire: ReturnType<GuardianTextures['sample']> = null;
+    let frame = 0, last = 0, intersecting = true, visible = !document.hidden;
     state.current.pathProgress = -1;
-    let frame = 0, last = 0;
-    let intersecting = true;
-    let visible = !document.hidden;
-    const atlas = (source: Atlas, index: number, dx: number, dy: number, dw: number, dh: number, opacity = 1, mirror = false) => {
-      if (opacity < .002) return;
-      context.save(); context.globalAlpha = opacity;
-      if (mirror) { context.translate(640, 0); context.scale(-1, 1); }
-      context.drawImage(source.image, index % source.columns * source.width, Math.floor(index / source.columns) * source.height,
-        source.width, source.height, dx, dy, dw, dh);
-      context.restore();
+    const pathNode = followJourney ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
+    const copyNode = host.closest('.sky-app')?.querySelector('[data-guardian-copy], .sky-garden-copy');
+    const drawClip = (ctx: CanvasRenderingContext2D, clip: GuardianClip, seconds: number, mirror = false) => {
+      const sample = cache.sample(clip, seconds); if (!sample) return false;
+      const { image, spec, sx, sy } = sample;
+      ctx.clearRect(0, 0, 640, 600); ctx.save();
+      if (mirror) { ctx.translate(640, 0); ctx.scale(-1, 1); }
+      ctx.drawImage(image, sx, sy, spec.width, spec.height, ox + spec.left * artScale, oy + spec.top * artScale, spec.width * artScale, spec.height * artScale);
+      ctx.restore(); displayedFrame = sample.frame; return true;
+    };
+    const changeForm = () => {
+      const s = state.current;
+      s.form = s.form === 'dragon' ? 'human' : 'dragon';
+      s.transformAt = s.time; s.nextForm = s.time + (s.form === 'human' ? between(20, 35) : between(65, 110));
+      s.phase = 'idle'; s.elapsed = 0; s.wait = 2; greeting.current.until = 0;
+      s.nextBreath = s.time + between(18, 38);
     };
     const render = (now: number) => {
-      const dt = moving && visible && last ? Math.min((now - last) / 1000, .05) : 0;
+      frame = 0;
+      const dt = command.current.moving && visible && last ? Math.min((now - last) / 1000, .05) : 0;
       last = now;
-      const s = state.current, w = world.current, art = images.current!;
-      const copyRect = copyNode?.getBoundingClientRect();
-      if (copyRect) w.copy = { left: copyRect.left, right: copyRect.right, top: copyRect.top - (w.width < 761 ? 0 : 50), bottom: copyRect.bottom };
-      const held = !command.current.entering && (greeting.current.pointer || greeting.current.focus || greeting.current.touch);
-      const bounds = roamBounds(w.width, w.height, w.size);
-      let justCentered = false;
+      const s = state.current, w = world.current, bounds = roamBounds(w.width, w.height, w.size);
       s.time += dt;
-      const frontal = s.phase === 'exhale' ? 1 : s.phase === 'center' ? ease(clamp((s.elapsed / s.duration - .55) / .45, 0, 1)) : held ? 1 : 0;
-      s.hover += (frontal - s.hover) * (1 - Math.exp(-dt * 10));
-      if (held && (s.phase === 'travel' || s.phase === 'summon')) { s.phase = 'settle'; s.elapsed = 0; }
-      s.elapsed += dt;
+      let centered = false;
+      const held = !command.current.entering && s.form === 'dragon' && s.time < greeting.current.until && !drag.current?.active;
+      if (!held && !drag.current?.active) s.elapsed += dt;
+      if (transformRequested.current && !command.current.entering && !command.current.followJourney) {
+        transformRequested.current = false; changeForm();
+      }
       if (s.phase === 'center') {
         const progress = ease(clamp(s.elapsed / s.duration, 0, 1));
         s.position = { x: s.from.x + (s.target.x - s.from.x) * progress, y: s.from.y + (s.target.y - s.from.y) * progress };
         s.scale = 1 + progress * .16;
-        if (s.elapsed >= s.duration) { s.phase = 'exhale'; s.elapsed = 0; justCentered = true; }
-      } else if (s.phase === 'exhale') { s.hover = 1; }
-      else if (pathNode && command.current.followJourney) {
-        const pathRect = pathNode.getBoundingClientRect();
-        const progress = Number(pathNode.dataset.progress ?? 0);
+        if (s.elapsed >= s.duration) { s.phase = 'exhale'; s.elapsed = 0; centered = true; }
+      } else if (s.phase !== 'exhale' && pathNode && command.current.followJourney) {
+        const rect = pathNode.getBoundingClientRect(), progress = Number(pathNode.dataset.progress ?? 0);
         if (s.pathProgress < 0 && w.width >= 760) s.right = pathNode.dataset.direction !== 'left';
-        if (s.pathProgress >= 0 && Math.abs(progress - s.pathProgress) > .00001) {
-          s.right = progress > s.pathProgress;
-          s.pathTravelUntil = now + 450;
-        }
+        if (s.pathProgress >= 0 && Math.abs(progress - s.pathProgress) > .00001) { s.right = progress > s.pathProgress; s.pathTravelUntil = now + 450; }
         s.pathProgress = progress;
-        // Scroll controls position even while ambient animation is paused.
-        s.position = { x: pathRect.left, y: pathRect.top - w.size * .16 };
-        if (!moving || held) { s.phase = 'idle'; s.elapsed = 0; }
-        else if (now < s.pathTravelUntil) { s.phase = 'travel'; s.elapsed = 0; }
-        else if (s.phase === 'travel') { s.phase = 'settle'; s.elapsed = 0; }
-        else if (s.phase === 'settle' && s.elapsed >= 1.6) { s.phase = 'idle'; s.elapsed = 0; }
-        s.scale = 1;
+        // Shared feet at 402.4/640 preserve the existing bridge anchor.
+        s.position = { x: rect.left, y: rect.top - w.size * .16 };
+        s.phase = command.current.moving && now < s.pathTravelUntil ? 'travel' : 'idle'; s.scale = 1;
+      } else if (!held && !drag.current?.active && !command.current.entering) {
+        if (s.phase === 'idle') {
+          if (s.time >= s.nextForm) changeForm();
+          else if (s.form === 'dragon' && s.time >= s.nextBreath) {
+            s.right = s.position.x < w.width / 2; s.phase = 'breath-prepare'; s.elapsed = 0;
+            void cache.warm('fire').catch(() => {});
+          } else if (s.elapsed > s.wait) {
+            const stop = rememberedDestination(s.position, bounds, s.memory);
+            s.from = { ...s.position }; s.target = stop.point; s.mode = stop.kind;
+            const distance = Math.hypot(s.target.x - s.position.x, s.target.y - s.position.y);
+            s.right = s.target.x > s.position.x; s.bend = between(-1, 1) * Math.min(distance * .3, 130);
+            s.duration = clamp(distance / between(65, 100), 2.8, 13); s.phase = 'summon'; s.elapsed = 0;
+          }
+        } else if (s.phase === 'summon' && s.elapsed >= manifest.cloudSeconds) { s.phase = 'travel'; s.elapsed = 0; }
+        else if (s.phase === 'travel') {
+          s.position = flightPoint(s.from, s.target, s.elapsed / s.duration, bounds, s.bend);
+          if (s.elapsed >= s.duration) { s.phase = 'settle'; s.elapsed = 0; }
+        } else if (s.phase === 'settle' && s.elapsed >= manifest.cloudSeconds) { s.phase = 'idle'; s.elapsed = 0; s.wait = between(.8, 3.5); }
+        else if (s.phase === 'breath-prepare' && s.elapsed >= 1.1) { s.phase = 'breath'; s.elapsed = 0; }
+        else if (s.phase === 'breath' && s.elapsed >= manifest.fireSeconds) { s.phase = 'breath-recover'; s.elapsed = 0; }
+        else if (s.phase === 'breath-recover' && s.elapsed >= 1.1) {
+          s.phase = 'idle'; s.elapsed = 0; s.wait = 2; s.nextBreath = s.time + between(18, 38);
+        }
       }
-      else if (s.phase === 'idle' && !held && s.elapsed > s.wait) {
-        s.from = { ...s.position };
-        s.mode = flightKind();
-        const target = destination(s.position, bounds, s.mode, Math.random, s.recent);
-        s.recent = [...s.recent, { ...s.position }].slice(-6);
-        const distance = Math.hypot(target.x - s.position.x, target.y - s.position.y);
-        s.bend = between(-1, 1) * Math.min(distance * .3, 130);
-        s.target = target; s.right = target.x > s.position.x;
-        if (s.mode === 'vertical') s.right = Math.random() > .5;
-        s.duration = clamp(distance / between(65, 100), 2.8, 13);
-        s.phase = 'summon'; s.elapsed = 0;
-      } else if (s.phase === 'summon' && s.elapsed >= 1.6) { s.phase = 'travel'; s.elapsed = 0; }
-      else if (s.phase === 'travel') {
-        s.position = flightPoint(s.from, s.target, s.elapsed / s.duration, bounds, s.bend);
-        if (s.elapsed >= s.duration) { s.phase = 'settle'; s.elapsed = 0; }
-      } else if (s.phase === 'settle' && s.elapsed >= 1.6) { s.phase = 'idle'; s.elapsed = 0; s.wait = Math.random() < .2 ? between(6, 9) : between(.8, 3.5); }
 
+      const side = s.right ? 'right' : 'left';
+      const breathing = s.phase.startsWith('breath');
+      const front = held || s.phase === 'exhale' || s.phase === 'center' && s.elapsed / s.duration > .65;
+      const walking = ['summon', 'travel', 'settle', 'center'].includes(s.phase);
+      const clip: GuardianClip = s.form === 'human' ? 'human' : front ? 'hover' : breathing || walking ? side : 'idle';
+      const key = s.phase === 'exhale' && exhale.current ? 'exhale' : clip;
+      let available = false;
+      if (key === 'exhale') { tc.clearRect(0, 0, 640, 600); tc.drawImage(exhale.current!, 32, 0, 576, 432); available = true; }
+      else available = drawClip(tc, clip, s.time);
+      if (available) {
+        if (key !== poseKey) {
+          old.clearRect(0, 0, 640, 600); old.drawImage(pose, 0, 0);
+          changedAt = poseKey ? s.time : -10; poseKey = key;
+        }
+        const mix = command.current.moving ? ease(clamp((s.time - changedAt) / .9, 0, 1)) : 1;
+        pc.clearRect(0, 0, 640, 600); pc.save();
+        // Add contributions to avoid the opacity dip of two source-over fades.
+        pc.globalAlpha = 1 - mix; pc.drawImage(previous, 0, 0);
+        pc.globalCompositeOperation = 'lighter'; pc.globalAlpha = mix; pc.drawImage(target, 0, 0); pc.restore();
+      }
       context.clearRect(0, 0, 640, 600);
-      const cycle = Math.floor(s.time * 1000 / 45) % 80;
-      const cloudProgress = s.phase === 'summon' ? clamp(s.elapsed / 1.6, 0, 1)
-        : s.phase === 'settle' ? 1 - clamp(s.elapsed / 1.6, 0, 1) : s.phase === 'travel' || s.phase === 'center' ? 1 : 0;
-      const cloudFrame = cloudProgress * 8, cloudIndex = Math.floor(cloudFrame);
-      const cloudMix = cloudFrame - cloudIndex;
-      const cloudAlpha = (1 - s.hover) * Math.min(cloudProgress * 3, 1);
-      atlas(art.clouds, cloudIndex, 64, 140, 512, 384, cloudAlpha * (1 - cloudMix));
-      if (cloudIndex < 8) atlas(art.clouds, cloudIndex + 1, 64, 140, 512, 384, cloudAlpha * cloudMix);
-      const bob = s.phase === 'travel' ? Math.sin(s.time * 1.2) * 5 : 0;
-      const profile = s.phase === 'travel' || s.phase === 'center' ? 1 : s.phase === 'summon' ? ease(clamp(s.elapsed / .65, 0, 1))
-        : s.phase === 'settle' ? 1 - ease(clamp(s.elapsed / .65, 0, 1)) : 0;
-      atlas(art.idle, cycle, 0, bob - cloudProgress * 9, 640, 440, (1 - profile) * (1 - s.hover));
-      atlas(art.travel, cycle, 0, bob - cloudProgress * 9, 640, 440, profile * (1 - s.hover), s.right);
-      if (s.hover > .002) {
-        context.save(); context.globalAlpha = s.hover;
-        const exhale = s.phase === 'exhale' ? ease(clamp(s.elapsed / .35, 0, 1)) : 0;
-        context.globalAlpha = s.hover * (1 - exhale); context.drawImage(art.hover, 32, 0, 576, 432);
-        if (exhale > 0) { context.globalAlpha = s.hover * exhale; context.drawImage(art.breath, 32, 0, 576, 432); }
+      const cloudClip: GuardianClip | null = !front && !pathNode && !breathing && !drag.current?.active
+        ? s.phase === 'summon' ? 'cloud_form' : s.phase === 'travel' || s.phase === 'center' ? 'cloud_drift' : s.phase === 'settle' ? 'cloud_dissolve' : null : null;
+      if (cloudClip) { drawClip(cc, cloudClip, s.elapsed, s.right); context.drawImage(cloud, 0, 0); }
+      else cc.clearRect(0, 0, 640, 600);
+      context.drawImage(pose, 0, 0);
+      if (s.time - s.transformAt < 1.8 && command.current.moving) {
+        const t = (s.time - s.transformAt) / 1.8, strength = Math.sin(t * Math.PI);
+        context.save(); context.globalAlpha = strength * .65;
+        for (let i = 0; i < 12; i++) {
+          const angle = i * Math.PI / 6 + t * 3, radius = 55 + t * 110;
+          const x = 320 + Math.cos(angle) * radius, y = 270 + Math.sin(angle) * radius;
+          const mist = context.createRadialGradient(x, y, 0, x, y, 80);
+          mist.addColorStop(0, i % 3 ? '#150e19' : '#79051e'); mist.addColorStop(1, '#150e1900');
+          context.fillStyle = mist; context.fillRect(x - 80, y - 80, 160, 160);
+        }
         context.restore();
       }
-      button.style.transform = `translate3d(${s.position.x - w.size / 2}px, ${s.position.y - w.size * .46875}px, 0) scale(${s.scale})`;
-      // Passing behind the copy feels like a deeper cloud layer, without blocking its controls.
-      const body = { left: s.position.x - w.size * .48, right: s.position.x + w.size * .48,
-        top: s.position.y - w.size * .47, bottom: s.position.y + w.size * .23 };
-      const overlap = Math.max(0, Math.min(body.right, w.copy.right) - Math.max(body.left, w.copy.left))
-        * Math.max(0, Math.min(body.bottom, w.copy.bottom) - Math.max(body.top, w.copy.top));
-      const coverage = clamp(overlap / (w.size * w.size * .96 * .7) * 4, 0, 1);
-      const opacity = command.current.entering || command.current.followJourney ? 1 : 1 - ease(coverage) * .8;
-      s.opacity = moving ? s.opacity + (opacity - s.opacity) * (1 - Math.exp(-dt * 5)) : opacity;
+      const left = s.position.x - w.size / 2, top = s.position.y - w.size * .46875;
+      button.style.transform = `translate3d(${left}px, ${top}px, 0) scale(${s.scale})`;
+      const copy = copyNode?.getBoundingClientRect();
+      const overlap = copy ? Math.max(0, Math.min(s.position.x + w.size * .48, copy.right) - Math.max(s.position.x - w.size * .48, copy.left))
+        * Math.max(0, Math.min(s.position.y + w.size * .23, copy.bottom) - Math.max(s.position.y - w.size * .47, copy.top)) : 0;
+      const desiredOpacity = command.current.entering || command.current.followJourney || drag.current?.active ? 1 : 1 - ease(clamp(overlap / (w.size * w.size * .672) * 4, 0, 1)) * .8;
+      s.opacity = command.current.moving ? s.opacity + (desiredOpacity - s.opacity) * (1 - Math.exp(-dt * 5)) : desiredOpacity;
       button.style.opacity = String(s.opacity);
-      button.dataset.phase = held ? 'hover' : s.phase;
-      button.dataset.frame = String(cycle);
-      button.dataset.direction = s.right ? 'right' : 'left';
-      button.dataset.flight = s.mode;
-      button.dataset.target = `${s.target.x.toFixed(1)},${s.target.y.toFixed(1)}`;
-      button.dataset.guided = String(command.current.followJourney && !command.current.entering);
-      if (justCentered) {
+      button.style.pointerEvents = desiredOpacity < .5 && !command.current.followJourney ? 'none' : 'auto';
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      if (fx.canvas.width !== Math.round(w.width * dpr) || fx.canvas.height !== Math.round(w.height * dpr)) {
+        fx.canvas.width = Math.round(w.width * dpr); fx.canvas.height = Math.round(w.height * dpr);
+      }
+      fx.setTransform(dpr, 0, 0, dpr, 0, 0); fx.clearRect(0, 0, w.width, w.height);
+      if (s.phase === 'breath' && !held) {
+        const fire = cache.sample('fire', s.elapsed) ?? lastFire;
+        if (fire) {
+          lastFire = fire;
+          const { image, spec, sx, sy } = fire, scale = w.size / 640;
+          fx.save(); fx.globalAlpha = s.opacity;
+          fx.translate(left + 320 * scale, top); if (!s.right) fx.scale(-1, 1);
+          fx.drawImage(image, sx, sy, spec.width, spec.height, (ox + spec.left * artScale - 320) * scale,
+            (oy + spec.top * artScale) * scale, spec.width * artScale * scale, spec.height * artScale * scale);
+          fx.restore();
+        }
+      } else lastFire = null;
+      Object.assign(button.dataset, { phase: held ? 'hover' : s.phase, frame: String(displayedFrame), body: poseKey,
+        form: s.form, direction: side, flight: s.mode, target: `${s.target.x.toFixed(1)},${s.target.y.toFixed(1)}`,
+        guided: String(command.current.followJourney && !command.current.entering), pages: String(cache.count) });
+      if (centered) {
         const rect = button.getBoundingClientRect();
         command.current.onCentered?.({ x: rect.left + rect.width * .48, y: rect.top + rect.width * .28 });
       }
-      if (moving && visible) frame = requestAnimationFrame(render);
+      if (command.current.moving && visible) frame = requestAnimationFrame(render);
     };
-    const visibility = () => {
-      visible = intersecting && !document.hidden; cancelAnimationFrame(frame); last = 0;
-      if (visible) frame = requestAnimationFrame(render);
-    };
-    // No animation work while paused, off-screen, or in a background tab.
-    const observer = new IntersectionObserver(entries => {
-      intersecting = entries[0].isIntersecting;
-      visible = intersecting && !document.hidden; cancelAnimationFrame(frame); last = 0;
-      if (visible) frame = requestAnimationFrame(render);
-    });
+    const wakeFrame = () => { if (!frame && visible) frame = requestAnimationFrame(render); };
+    wake.current = wakeFrame;
+    const visibility = () => { visible = intersecting && !document.hidden; cancelAnimationFrame(frame); frame = 0; last = 0; wakeFrame(); };
+    const observer = new IntersectionObserver(entries => { intersecting = entries[0].isIntersecting; visibility(); });
     observer.observe(host);
-    document.addEventListener('visibilitychange', visibility);
-    window.addEventListener('scroll', visibility, { passive: true });
-    window.addEventListener('resize', visibility, { passive: true });
-    frame = requestAnimationFrame(render);
-    return () => { cancelAnimationFrame(frame); observer.disconnect(); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('scroll', visibility); window.removeEventListener('resize', visibility); };
+    document.addEventListener('visibilitychange', visibility); window.addEventListener('scroll', wakeFrame, { passive: true }); window.addEventListener('resize', wakeFrame, { passive: true });
+    wakeFrame();
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); wake.current = () => {};
+      document.removeEventListener('visibilitychange', visibility); window.removeEventListener('scroll', wakeFrame); window.removeEventListener('resize', wakeFrame); };
   }, [moving, ready, entering, sceneKey, followJourney]);
 
+  const greet = () => {
+    const s = state.current;
+    if (!command.current.entering && s.form === 'dragon' && !s.phase.startsWith('breath')) {
+      greeting.current.until = s.time + 5; wake.current();
+    }
+  };
+  const requestForm = () => {
+    if (!command.current.entering && !command.current.followJourney) { transformRequested.current = true; wake.current(); }
+  };
+  const drop = () => {
+    if (drag.current?.active) { state.current.phase = 'idle'; state.current.elapsed = 0; state.current.wait = 4; }
+    drag.current = null; wake.current();
+  };
   return <div className="sky-roaming-stage" ref={stage}>
-    <button ref={companion} className="sky-realm-guardian" aria-label="Greet the dragon guardian" title="Say hello"
-      disabled={entering} onPointerEnter={event => { if (event.pointerType !== 'touch') greeting.current.pointer = true; }}
+    <canvas ref={effects} className="sky-guardian-effects" aria-hidden="true" />
+    <button ref={companion} className="sky-realm-guardian" aria-label="Heavenly demonic dragon: greet, drag, or double-click to transform"
+      title="Greet for five seconds · Drag to move · Double-click to transform" disabled={entering}
+      onPointerEnter={event => { if (event.pointerType !== 'touch' && !greeting.current.pointer) { greeting.current.pointer = true; greet(); } }}
       onPointerLeave={() => { greeting.current.pointer = false; }}
-      onPointerDown={event => { if (event.pointerType === 'touch') greeting.current.touch = !greeting.current.touch; }}
-      onFocus={event => { greeting.current.focus = event.currentTarget.matches(':focus-visible'); }}
-      onBlur={() => { greeting.current.focus = false; greeting.current.touch = false; }}>
-      <img className={`sky-guardian-poster ${ready ? 'sky-guardian-loaded' : ''}`} src={`${ASSETS}idle-poster.webp`} alt="" />
-      {!failed && <canvas ref={canvas} width={640} height={600} className={ready ? 'sky-guardian-loaded' : ''} aria-hidden="true" />}
+      onPointerDown={event => {
+        if (event.pointerType === 'touch') greet();
+        if (command.current.followJourney || event.button !== 0) return;
+        drag.current = { id: event.pointerId, start: { x: event.clientX, y: event.clientY }, origin: { ...state.current.position }, active: false };
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }}
+      onPointerMove={event => {
+        const d = drag.current; if (!d || d.id !== event.pointerId) return;
+        const dx = event.clientX - d.start.x, dy = event.clientY - d.start.y;
+        if (Math.hypot(dx, dy) > 6) d.active = true;
+        if (d.active) {
+          greeting.current.until = 0; const w = world.current;
+          state.current.position = contain({ x: d.origin.x + dx, y: d.origin.y + dy }, roamBounds(w.width, w.height, w.size));
+          state.current.phase = 'idle'; state.current.elapsed = 0; wake.current();
+        }
+      }}
+      onPointerUp={drop} onPointerCancel={drop} onLostPointerCapture={drop} onDoubleClick={requestForm}
+      onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); requestForm(); } }}
+      onFocus={event => { if (event.currentTarget.matches(':focus-visible') && !greeting.current.focus) { greeting.current.focus = true; greet(); } }}
+      onBlur={() => { greeting.current.focus = false; }}>
+      <img className={`sky-guardian-poster ${ready ? 'sky-guardian-loaded' : ''}`} src={guardianBase + profile + '/poster.webp'} alt="" draggable={false} />
+      <canvas ref={canvas} width={640} height={600} className={ready ? 'sky-guardian-loaded' : ''} aria-hidden="true" />
     </button>
   </div>;
 }

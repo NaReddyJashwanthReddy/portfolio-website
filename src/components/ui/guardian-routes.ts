@@ -23,6 +23,30 @@ export function flightKind(random = Math.random): FlightKind {
   return choice < .18 ? 'vertical' : choice < .32 ? 'horizontal' : 'diagonal';
 }
 
+export type RoamingMemory = { visits: number[]; recent: number[] };
+export const roamingMemory = (): RoamingMemory => ({ visits: Array(24).fill(0), recent: [] });
+
+/** Prefer less-used regions without repeating a recent destination or a fixed route. */
+export function rememberedDestination(from: Point, bounds: RoamBounds, memory: RoamingMemory, random = Math.random): { point: Point; kind: FlightKind } {
+  const sx = Math.max(1, bounds.right - bounds.left), sy = Math.max(1, bounds.bottom - bounds.top);
+  const choice = random(), kind: FlightKind = choice < .3 ? 'horizontal' : choice < .85 ? 'diagonal' : 'vertical';
+  const candidates = memory.visits.map((visits, cell) => ({ cell, weight: 1 / (1 + visits) ** 1.5,
+    point: { x: bounds.left + (cell % 4 + .15 + random() * .7) / 4 * sx,
+      y: bounds.top + (Math.floor(cell / 4) + .15 + random() * .7) / 6 * sy } }));
+  const fresh = candidates.filter(candidate => !memory.recent.includes(candidate.cell));
+  const matching = fresh.filter(({ point }) => {
+    const dx = Math.abs(point.x - from.x), dy = Math.abs(point.y - from.y);
+    return kind === 'horizontal' ? dx >= sx * .35 && dy <= sy * .12
+      : kind === 'diagonal' ? dx >= sx * .3 && dy >= sy * .08 && dy <= Math.max(sy * .22, sx * 1.15)
+      : dx <= sx * .18 && dy >= sy * .18;
+  });
+  const pool = matching.length ? matching : fresh;
+  let pick = random() * pool.reduce((sum, candidate) => sum + candidate.weight, 0);
+  const selected = pool.find(candidate => (pick -= candidate.weight) <= 0) ?? pool[pool.length - 1];
+  memory.visits[selected.cell]++; memory.recent = [...memory.recent, selected.cell].slice(-6);
+  return { point: selected.point, kind };
+}
+
 /** Sample the whole scene, mixing short and long trips and favoring places not visited recently. */
 export function destination(from: Point, bounds: RoamBounds, kind: FlightKind, random = Math.random, recent: Point[] = []): Point {
   const spanX = bounds.right - bounds.left, spanY = bounds.bottom - bounds.top;
