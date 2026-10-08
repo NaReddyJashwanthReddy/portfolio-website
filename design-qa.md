@@ -85,3 +85,8 @@ final result: passed
 - The Journey cloud animates during scrolling and holds its last frame at rest. The directional pose and disabled hover are preserved, as are chapter contact geometry, mobile layout, pause/reduced-motion seeking, and cloud-free human form.
 - The revised motion regression covers 600 changing scroll positions, reversals, immediate cold-texture progress, rest and endpoints.
 - Private desktop/phone checks confirmed immediate progress on repeated wheel input, no motion after scrolling stops, visible complete clouds, both travel directions, pause/resume and Work navigation. Delaying the guardian manifest by three seconds still allowed the scene to follow scrolling immediately. No browser runtime errors occurred. TypeScript/Vite build and existing bridge/asset checks passed. Visual evidence: `output/portfolio-guardian-qa/journey-immediate-cloud-desktop.png`.
+
+## Journey resting pose — 8 October 2026
+
+- Journey now uses the existing breathing idle animation after scrolling stops, with the existing smooth pose crossfade. Scrolling immediately restores left/right travel according to direction. The complete cloud remains beneath the dragon; the scene still follows scroll directly, and hover remains disabled.
+- Production build and direct-scroll regression passed. Private desktop, phone and delayed-manifest checks confirmed that the idle body frames keep breathing while the scene stays stationary, both directional poses resume on scrolling, and pause/resume and page navigation remain usable.

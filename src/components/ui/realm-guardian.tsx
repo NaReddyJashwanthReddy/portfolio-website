@@ -188,7 +188,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       const breathing = s.phase.startsWith('breath');
       const front = held || s.phase === 'exhale' || s.phase === 'center' && s.elapsed / s.duration > .65;
       const walking = ['summon', 'travel', 'settle', 'center'].includes(s.phase);
-      const clip: GuardianClip = s.form === 'human' ? 'human' : front ? 'hover' : breathing || walking || command.current.followJourney ? side : 'idle';
+      const clip: GuardianClip = s.form === 'human' ? 'human' : front ? 'hover' : breathing || walking ? side : 'idle';
       const key = s.phase === 'exhale' && exhale.current ? 'exhale' : clip;
       // Advance only through decoded body frames. A cold connection must not chase
       // ever-new pages while the still-loading frame falls further behind the clock.
