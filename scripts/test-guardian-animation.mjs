@@ -23,6 +23,10 @@ for (const profile of ['desktop', 'mobile']) {
   assert.equal(manifest.animations.left.frames, 480);
   assert.equal(manifest.animations.left.fps, 60);
   assert.equal(manifest.animations.fire.loop, false);
+  assert.equal(manifest.firePalette, 'black-gold-crimson');
+  assert.equal(manifest.animations.fire.frames, 410);
+  assert.equal(manifest.animations.fire.fps, 60);
+  assert.equal(manifest.fireSeconds, 410 / 60);
   assert.equal(manifest.hoverSeconds, 5);
 }
 

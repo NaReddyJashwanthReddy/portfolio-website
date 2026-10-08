@@ -154,21 +154,23 @@
       "top": 30,
       "loop": false,
       "pages": [
-        "fire-00.webp",
-        "fire-01.webp",
-        "fire-02.webp",
-        "fire-03.webp",
-        "fire-04.webp",
-        "fire-05.webp",
-        "fire-06.webp",
-        "fire-07.webp",
-        "fire-08.webp",
-        "fire-09.webp",
-        "fire-10.webp"
+        "fire-heavenly-00.webp",
+        "fire-heavenly-01.webp",
+        "fire-heavenly-02.webp",
+        "fire-heavenly-03.webp",
+        "fire-heavenly-04.webp",
+        "fire-heavenly-05.webp",
+        "fire-heavenly-06.webp",
+        "fire-heavenly-07.webp",
+        "fire-heavenly-08.webp",
+        "fire-heavenly-09.webp",
+        "fire-heavenly-10.webp"
       ]
     }
   },
   "cloudSeconds": 2,
   "hoverSeconds": 5,
-  "fireSeconds": 6.833333333333333
+  "fireSeconds": 6.833333333333333,
+  "firePalette": "black-gold-crimson",
+  "fireSourceSha256": "13a480e55d7b958edcd62bac0a6ecc5efa7e352e90d533c18019b05208574391"
 }

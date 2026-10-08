@@ -7,7 +7,7 @@ import type { GuardianManifest } from './guardian-animation';
 type Plume = { born: number; angle: number; spread: number; spin: number; seed: number };
 const flameStart = 2;
 
-/** The companion's actual black/scarlet flame curls expand into a full-screen breath. */
+/** The companion's black/gold/crimson flame curls expand into a full-screen breath. */
 export function DragonSmokeTransition({ origin, active = true, reveal, onCovered, onFinished }: {
   origin: Point; active?: boolean; reveal: boolean; onCovered: () => void; onFinished: () => void;
 }) {
@@ -31,7 +31,7 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
       cache = new GuardianTextures(manifest, base); art.current = cache;
       const page = Math.floor(flameStart * manifest.animations.fire.fps / manifest.pageFrames);
       await Promise.allSettled(manifest.animations.fire.pages.slice(page, page + 3).map(file => cache!.load(file)));
-    })().catch(() => { /* The black/scarlet vector fallback keeps navigation independent of loading. */ });
+    })().catch(() => { /* A matching vector fallback keeps navigation independent of loading. */ });
     return () => { cancelled = true; cache?.dispose(); art.current = null; };
   }, [profile]);
 
@@ -46,7 +46,7 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
     let nativeReady: boolean | undefined;
     const plumes: Plume[] = [];
     const bank = document.createElement('canvas'), bankPaint = bank.getContext('2d')!;
-    // Curled, pointed fire with red rims also works when downloads are blocked.
+    // Gold-edged black curls and occasional crimson veins also work offline.
     const fallback = document.createElement('canvas'); fallback.width = 384; fallback.height = 200;
     const paint = fallback.getContext('2d')!;
     for (let i = 17; i >= 0; i--) {
@@ -58,9 +58,12 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
       paint.bezierCurveTo(radius * .75, radius * .6, radius * 1.1, radius * .4, radius * 1.2, radius * .85);
       paint.bezierCurveTo(radius * .25, radius * .45, -radius * .7, radius * .8, -radius, 0);
       const heat = paint.createRadialGradient(0, 0, 0, radius * .2, 0, radius * 1.25);
-      heat.addColorStop(0, '#070206'); heat.addColorStop(.55, '#18030a'); heat.addColorStop(.84, '#95051c'); heat.addColorStop(1, '#e20b2d');
-      paint.fillStyle = heat; paint.shadowBlur = 12; paint.shadowColor = '#b50727'; paint.fill();
-      paint.strokeStyle = '#c3092b'; paint.lineWidth = 1.7; paint.stroke(); paint.restore();
+      const crimson = i % 7 === 3;
+      heat.addColorStop(0, '#070608'); heat.addColorStop(.55, '#171310');
+      heat.addColorStop(.84, crimson ? '#95051c' : '#9c681a');
+      heat.addColorStop(1, crimson ? '#c3092b' : '#ffe6a0');
+      paint.fillStyle = heat; paint.shadowBlur = 12; paint.shadowColor = crimson ? '#95051c' : '#d9a13c'; paint.fill();
+      paint.strokeStyle = crimson ? '#c3092b' : '#f3c76a'; paint.lineWidth = 1.7; paint.stroke(); paint.restore();
     }
     const resize = () => {
       width = innerWidth; height = innerHeight;
@@ -75,7 +78,7 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
       const reach = Math.hypot(width, height);
       // Opaque coverage underneath the flame detail hides the destination at the commit.
       const fill = ease(clamp((time - 1.85) / 1.15, 0, 1));
-      context.fillStyle = `rgba(12,3,8,${fill})`; context.fillRect(0, 0, width, height);
+      context.fillStyle = `rgba(10,8,9,${fill})`; context.fillRect(0, 0, width, height);
       {
         // Choose once: a late first download must not replace visible fallback fire
         // with the animation's initially empty frame halfway through the breath.
@@ -122,7 +125,7 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
       }
       element.dataset.coverage = fill.toFixed(3);
       element.dataset.flameFrame = String(sample?.frame ?? -1);
-      element.dataset.style = 'black-scarlet-breath';
+      element.dataset.style = 'black-gold-crimson-breath';
       element.dataset.spread = 'radial';
       if (time >= 3 && !covered) { covered = true; callbacks.current.onCovered(); }
       if (revealing.current) {
@@ -135,7 +138,7 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
     return () => { cancelAnimationFrame(frame); window.removeEventListener('resize', resize); };
   }, [origin.x, origin.y, active]);
 
-  return <div className="sky-smoke-overlay" style={{ pointerEvents: active ? 'auto' : 'none' }} role="status" aria-label="The dragon breathes black and red flames to reveal the next page" aria-hidden={!active}>
+  return <div className="sky-smoke-overlay" style={{ pointerEvents: active ? 'auto' : 'none' }} role="status" aria-label="The dragon breathes black flames with gold and crimson light to reveal the next page" aria-hidden={!active}>
     <canvas ref={canvas} aria-hidden="true" />
   </div>;
 }
