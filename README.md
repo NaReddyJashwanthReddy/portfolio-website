@@ -14,7 +14,7 @@ Open http://127.0.0.1:5173/. React 19, TypeScript, Vite, Tailwind, Framer Motion
 
 ## Current application
 
-- `src/SkygardenPortfolio.tsx`: root navigation, landing and dragon-smoke transitions.
+- `src/SkygardenPortfolio.tsx`: root navigation, landing and dragon-breath transitions. The black/scarlet flame animation grows from the muzzle into a full-screen veil before the next route is revealed.
 - `src/components/ui/realm-guardian.tsx`: the desktop companion's finalized body/cloud motions, five-second hover greeting, black/scarlet breath, human transformation and drag controls. Double-click or double-tap to transform; Enter/Space also work. Roaming remembers recent destinations and prefers less-visited regions.
 - `src/components/ui/guardian-animation.ts`: lazy texture decoding with an eight-page cache and a registered poster fallback. Separate desktop/mobile WebP pages in `public/assets/skygarden/guardian/v2` retain the completed Flowframes timings. `scripts/export-guardian-assets.py` regenerates these from the local companion source assets; regeneration is not part of deployment.
 - `src/components/ui/work-realm.tsx` and `src/data/work-catalog.ts`: seven categories and seventeen selected career/project entries.

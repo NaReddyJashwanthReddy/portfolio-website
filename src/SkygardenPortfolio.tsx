@@ -137,7 +137,7 @@ export default function SkygardenPortfolio() {
       {view.page === 'contact' && <HeavenlyContact moving={moving} navigate={navigate} onNotes={() => setNotes(true)} />}
     </main>
     <div className="sky-guardian-world"><RealmGuardian moving={moving} followJourney={view.page === 'journey'} entering={transitioning} sceneKey={routeHash(view)} onCentered={beginSmoke} /></div>
-    {transitioning && smokeStage !== 'gather' && <DragonSmokeTransition origin={smokeOrigin} reveal={smokeStage === 'reveal'} onCovered={smokeCovered} onFinished={() => setTransitioning(false)} />}
+    {transitioning && <DragonSmokeTransition origin={smokeOrigin} active={smokeStage !== 'gather'} reveal={smokeStage === 'reveal'} onCovered={smokeCovered} onFinished={() => setTransitioning(false)} />}
     <AnimatePresence>{notes && <motion.div className="sky-notes-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setNotes(false)}><div ref={notesPanel} className="sky-notes" role="dialog" aria-modal="true" aria-labelledby="sky-notes-title" onClick={event => event.stopPropagation()} onKeyDown={event => {
       if (event.key === 'Escape') setNotes(false);
       if (event.key === 'Tab') {
