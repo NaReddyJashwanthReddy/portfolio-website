@@ -3,6 +3,7 @@ import { clamp, contain, ease, flightPoint, rememberedDestination, roamBounds, r
 import type { FlightKind, Point } from './guardian-routes';
 import { GuardianTextures, guardianBase } from './guardian-animation';
 import type { GuardianClip, GuardianManifest } from './guardian-animation';
+import { advanceJourney, journeyMotion } from './journey-motion';
 
 type Phase = 'idle' | 'summon' | 'travel' | 'settle' | 'center' | 'exhale' | 'breath-prepare' | 'breath' | 'breath-recover';
 const between = (min: number, max: number) => min + Math.random() * (max - min);
@@ -15,6 +16,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
   const [profile] = useState(() => innerWidth < 761 ? 'mobile' : 'desktop');
   const [ready, setReady] = useState(false);
   const textures = useRef<GuardianTextures | null>(null), exhale = useRef<HTMLImageElement | null>(null);
+  const journeyPath = useRef<HTMLElement | null>(null);
   const command = useRef({ entering, onCentered, followJourney, moving });
   command.current = { entering, onCentered, followJourney, moving };
   const wake = useRef(() => {}), transformRequested = useRef(false);
@@ -26,7 +28,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
     opacity: 1, initialized: false, memory: roamingMemory(), bend: 0, scale: 1, mode: 'diagonal' as FlightKind,
     form: 'dragon' as 'dragon' | 'human', nextForm: 70, nextBreath: 24, transformAt: -10,
     bodyKey: '', bodySeconds: 0, bodyFrame: 0,
-    pathProgress: -1, pathTravelUntil: 0 });
+    journey: journeyMotion() });
 
   useEffect(() => {
     let cancelled = false;
@@ -42,7 +44,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       if (cancelled) { cache.dispose(); return; }
       textures.current = cache; setReady(true);
       // These may arrive later; the renderer holds the last complete pose meanwhile.
-      void Promise.allSettled(['left', 'right', 'hover'].map(clip => cache!.warm(clip as GuardianClip)));
+      void Promise.allSettled(['left', 'right', 'hover', 'cloud_form', 'cloud_drift', 'cloud_dissolve'].map(clip => cache!.warm(clip as GuardianClip)));
       const front = new Image(); front.src = '/assets/skygarden/guardian/exhale-front.webp';
       void front.decode().then(() => { if (!cancelled) exhale.current = front; }).catch(() => {});
     })().catch(() => { /* The poster remains visible; navigation has its own fallback. */ });
@@ -71,7 +73,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       const box = host.getBoundingClientRect(), size = button.offsetWidth;
       world.current = { width: box.width, height: box.height, size };
       const s = state.current, w = world.current;
-      const path = command.current.followJourney && w.width >= 760
+      const path = command.current.followJourney
         ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
       if (path && !command.current.entering) {
         const rect = path.getBoundingClientRect();
@@ -109,8 +111,10 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
     let poseKey = state.current.bodyKey, changedAt = -10, displayedFrame = state.current.bodyFrame;
     let lastFire: ReturnType<GuardianTextures['sample']> = null;
     let frame = 0, last = 0, intersecting = true, visible = !document.hidden;
-    state.current.pathProgress = -1;
     const pathNode = followJourney ? host.closest('.sky-app')?.querySelector<HTMLElement>('[data-guardian-path]') : null;
+    if (pathNode && (pathNode !== journeyPath.current || Math.abs(state.current.journey.progress - Number(pathNode.dataset.progress ?? 0)) > .00001))
+      state.current.journey = { ...journeyMotion(Number(pathNode.dataset.progress ?? 0)), direction: pathNode.dataset.direction === 'left' ? -1 : 1 };
+    journeyPath.current = pathNode ?? null;
     const copyNode = host.closest('.sky-app')?.querySelector('[data-guardian-copy], .sky-garden-copy');
     const drawClip = (ctx: CanvasRenderingContext2D, clip: GuardianClip, seconds: number, mirror = false, trackFrame = true) => {
       const sample = cache.sample(clip, seconds); if (!sample) return false;
@@ -134,7 +138,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       const s = state.current, w = world.current, bounds = roamBounds(w.width, w.height, w.size);
       s.time += dt;
       let centered = false;
-      const held = !command.current.entering && s.form === 'dragon' && s.time < greeting.current.until && !drag.current?.active;
+      const held = !command.current.entering && !command.current.followJourney && s.form === 'dragon' && s.time < greeting.current.until && !drag.current?.active;
       if (!held && !drag.current?.active) s.elapsed += dt;
       if (transformRequested.current && !command.current.entering && !command.current.followJourney) {
         transformRequested.current = false; changeForm();
@@ -145,13 +149,23 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
         s.scale = 1 + progress * .16;
         if (s.elapsed >= s.duration) { s.phase = 'exhale'; s.elapsed = 0; centered = true; }
       } else if (s.phase !== 'exhale' && pathNode && command.current.followJourney) {
-        const rect = pathNode.getBoundingClientRect(), progress = Number(pathNode.dataset.progress ?? 0);
-        if (s.pathProgress < 0 && w.width >= 760) s.right = pathNode.dataset.direction !== 'left';
-        if (s.pathProgress >= 0 && Math.abs(progress - s.pathProgress) > .00001) { s.right = progress > s.pathProgress; s.pathTravelUntil = now + 450; }
-        s.pathProgress = progress;
+        const requested = Number(pathNode.dataset.requested ?? 0), j = s.journey;
+        const journeyCloud = j.phase === 'summon' ? 'cloud_form' : j.phase === 'travel' ? 'cloud_drift' : j.phase === 'settle' ? 'cloud_dissolve' : null;
+        const expectedSide = (j.phase === 'travel' && requested !== j.progress ? requested > j.progress : j.direction === 1) ? 'right' : 'left';
+        // Buffer a complete body/cloud frame before moving the bridge with it.
+        const buffered = !!cache.sample(expectedSide, expectedSide === s.bodyKey ? s.bodySeconds + dt : 0)
+          && (!journeyCloud || !!cache.sample(journeyCloud, j.elapsed + dt));
+        s.journey = command.current.moving ? advanceJourney(j, requested, buffered ? dt : 0)
+          : Number(pathNode.dataset.progress ?? 0) === j.progress ? j
+          : { ...journeyMotion(Number(pathNode.dataset.progress ?? 0)), direction: pathNode.dataset.direction === 'left' ? -1 : 1 };
+        s.phase = s.journey.phase; s.elapsed = s.journey.elapsed; s.right = s.journey.direction === 1;
+        pathNode.dataset.phase = s.phase;
+        pathNode.dataset.phaseTime = String(s.elapsed);
+        if (s.journey.progress !== Number(pathNode.dataset.progress)) window.dispatchEvent(new CustomEvent('journey-progress', { detail: s.journey.progress }));
+        const rect = pathNode.getBoundingClientRect();
         // Shared feet at 402.4/640 preserve the existing bridge anchor.
         s.position = { x: rect.left, y: rect.top - w.size * .16 };
-        s.phase = command.current.moving && now < s.pathTravelUntil ? 'travel' : 'idle'; s.scale = 1;
+        s.scale = 1;
       } else if (!held && !drag.current?.active && !command.current.entering) {
         if (s.phase === 'idle') {
           if (s.time >= s.nextForm) changeForm();
@@ -163,7 +177,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
             s.from = { ...s.position }; s.target = stop.point; s.mode = stop.kind;
             const distance = Math.hypot(s.target.x - s.position.x, s.target.y - s.position.y);
             s.right = s.target.x > s.position.x; s.bend = between(-1, 1) * Math.min(distance * .3, 130);
-            s.duration = clamp(distance / between(65, 100), 2.8, 13); s.phase = 'summon'; s.elapsed = 0;
+            s.duration = clamp(distance / between(65, 100), 2.8, 13); s.phase = s.form === 'human' ? 'travel' : 'summon'; s.elapsed = 0;
           }
         } else if (s.phase === 'summon' && s.elapsed >= manifest.cloudSeconds) { s.phase = 'travel'; s.elapsed = 0; }
         else if (s.phase === 'travel') {
@@ -181,7 +195,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       const breathing = s.phase.startsWith('breath');
       const front = held || s.phase === 'exhale' || s.phase === 'center' && s.elapsed / s.duration > .65;
       const walking = ['summon', 'travel', 'settle', 'center'].includes(s.phase);
-      const clip: GuardianClip = s.form === 'human' ? 'human' : front ? 'hover' : breathing || walking ? side : 'idle';
+      const clip: GuardianClip = s.form === 'human' ? 'human' : front ? 'hover' : breathing || walking || command.current.followJourney ? side : 'idle';
       const key = s.phase === 'exhale' && exhale.current ? 'exhale' : clip;
       // Advance only through decoded body frames. A cold connection must not chase
       // ever-new pages while the still-loading frame falls further behind the clock.
@@ -202,7 +216,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
         pc.globalCompositeOperation = 'lighter'; pc.globalAlpha = mix; pc.drawImage(target, 0, 0); pc.restore();
       }
       context.clearRect(0, 0, 640, 600);
-      const cloudClip: GuardianClip | null = !front && !pathNode && !breathing && !drag.current?.active
+      const cloudClip: GuardianClip | null = s.form === 'dragon' && !front && !breathing && !drag.current?.active
         ? s.phase === 'summon' ? 'cloud_form' : s.phase === 'travel' || s.phase === 'center' ? 'cloud_drift' : s.phase === 'settle' ? 'cloud_dissolve' : null : null;
       if (cloudClip) { drawClip(cc, cloudClip, s.elapsed, s.right, false); context.drawImage(cloud, 0, 0); }
       else cc.clearRect(0, 0, 640, 600);
@@ -227,7 +241,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       const desiredOpacity = command.current.entering || command.current.followJourney || drag.current?.active ? 1 : 1 - ease(clamp(overlap / (w.size * w.size * .672) * 4, 0, 1)) * .8;
       s.opacity = command.current.moving ? s.opacity + (desiredOpacity - s.opacity) * (1 - Math.exp(-dt * 5)) : desiredOpacity;
       button.style.opacity = String(s.opacity);
-      button.style.pointerEvents = desiredOpacity < .5 && !command.current.followJourney ? 'none' : 'auto';
+      button.style.pointerEvents = command.current.followJourney || desiredOpacity < .5 ? 'none' : 'auto';
       const dpr = Math.min(devicePixelRatio || 1, 2);
       if (fx.canvas.width !== Math.round(w.width * dpr) || fx.canvas.height !== Math.round(w.height * dpr)) {
         fx.canvas.width = Math.round(w.width * dpr); fx.canvas.height = Math.round(w.height * dpr);
@@ -247,7 +261,7 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
       } else lastFire = null;
       Object.assign(button.dataset, { phase: held ? 'hover' : s.phase, frame: String(displayedFrame), body: poseKey,
         form: s.form, direction: side, flight: s.mode, target: `${s.target.x.toFixed(1)},${s.target.y.toFixed(1)}`,
-        guided: String(command.current.followJourney && !command.current.entering), pages: String(cache.count) });
+        cloud: cloudClip ?? 'none', guided: String(command.current.followJourney && !command.current.entering), pages: String(cache.count) });
       if (centered) {
         const rect = button.getBoundingClientRect();
         command.current.onCentered?.({ x: rect.left + rect.width * .48, y: rect.top + rect.width * .28 });
@@ -259,15 +273,15 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
     const visibility = () => { visible = intersecting && !document.hidden; cancelAnimationFrame(frame); frame = 0; last = 0; wakeFrame(); };
     const observer = new IntersectionObserver(entries => { intersecting = entries[0].isIntersecting; visibility(); });
     observer.observe(host);
-    document.addEventListener('visibilitychange', visibility); window.addEventListener('scroll', wakeFrame, { passive: true }); window.addEventListener('resize', wakeFrame, { passive: true });
+    document.addEventListener('visibilitychange', visibility); window.addEventListener('journey-request', wakeFrame); window.addEventListener('scroll', wakeFrame, { passive: true }); window.addEventListener('resize', wakeFrame, { passive: true });
     wakeFrame();
     return () => { cancelAnimationFrame(frame); observer.disconnect(); wake.current = () => {};
-      document.removeEventListener('visibilitychange', visibility); window.removeEventListener('scroll', wakeFrame); window.removeEventListener('resize', wakeFrame); };
+      document.removeEventListener('visibilitychange', visibility); window.removeEventListener('journey-request', wakeFrame); window.removeEventListener('scroll', wakeFrame); window.removeEventListener('resize', wakeFrame); };
   }, [moving, ready, entering, sceneKey, followJourney]);
 
   const greet = () => {
     const s = state.current;
-    if (!command.current.entering && s.form === 'dragon' && !s.phase.startsWith('breath')) {
+    if (!command.current.entering && !command.current.followJourney && s.form === 'dragon' && !s.phase.startsWith('breath')) {
       greeting.current.until = s.time + 5; wake.current();
     }
   };
@@ -280,8 +294,8 @@ export function RealmGuardian({ moving, entering = false, sceneKey = '', followJ
   };
   return <div className="sky-roaming-stage" ref={stage}>
     <canvas ref={effects} className="sky-guardian-effects" aria-hidden="true" />
-    <button ref={companion} className="sky-realm-guardian" aria-label="Heavenly demonic dragon: greet, drag, or double-click to transform"
-      title="Greet for five seconds · Drag to move · Double-click to transform" disabled={entering}
+    <button ref={companion} className="sky-realm-guardian" aria-label={followJourney ? 'Heavenly demonic dragon guiding the journey' : 'Heavenly demonic dragon: greet, drag, or double-click to transform'}
+      title={followJourney ? undefined : 'Greet for five seconds · Drag to move · Double-click to transform'} disabled={entering || followJourney} tabIndex={followJourney ? -1 : undefined}
       onPointerEnter={event => { if (event.pointerType !== 'touch' && !greeting.current.pointer) { greeting.current.pointer = true; greet(); } }}
       onPointerLeave={() => { greeting.current.pointer = false; }}
       onPointerDown={event => {

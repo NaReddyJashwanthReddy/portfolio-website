@@ -5,6 +5,7 @@ import { GuardianTextures, guardianBase } from './guardian-animation';
 import type { GuardianManifest } from './guardian-animation';
 
 type Plume = { born: number; angle: number; spread: number; spin: number; seed: number };
+const flameStart = 2;
 
 /** The companion's actual black/scarlet flame curls expand into a full-screen breath. */
 export function DragonSmokeTransition({ origin, active = true, reveal, onCovered, onFinished }: {
@@ -28,7 +29,8 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
       const manifest = await response.json() as GuardianManifest;
       if (cancelled) return;
       cache = new GuardianTextures(manifest, base); art.current = cache;
-      await Promise.allSettled(manifest.animations.fire.pages.slice(0, 3).map(file => cache!.load(file)));
+      const page = Math.floor(flameStart * manifest.animations.fire.fps / manifest.pageFrames);
+      await Promise.allSettled(manifest.animations.fire.pages.slice(page, page + 3).map(file => cache!.load(file)));
     })().catch(() => { /* The black/scarlet vector fallback keeps navigation independent of loading. */ });
     return () => { cancelled = true; cache?.dispose(); art.current = null; };
   }, [profile]);
@@ -39,7 +41,7 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
     element.style.opacity = active ? '1' : '0';
     if (!active) { context.clearRect(0, 0, element.width, element.height); return; }
     let width = innerWidth, height = innerHeight, frame = 0, last = 0, time = 0;
-    let covered = false, revealTime = 0, accumulator = 0, flameTime = 0;
+    let covered = false, revealTime = 0, accumulator = 1, flameTime = flameStart;
     let sample: ReturnType<GuardianTextures['sample']> = null;
     let nativeReady: boolean | undefined;
     const plumes: Plume[] = [];
@@ -70,27 +72,27 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
     const render = (now: number) => {
       const dt = last ? Math.min((now - last) / 1000, .05) : 0; last = now; time += dt;
       context.clearRect(0, 0, width, height);
-      const breath = Math.max(0, time - .16), reach = Math.hypot(width, height);
+      const reach = Math.hypot(width, height);
       // Opaque coverage underneath the flame detail hides the destination at the commit.
       const fill = ease(clamp((time - 1.85) / 1.15, 0, 1));
       context.fillStyle = `rgba(12,3,8,${fill})`; context.fillRect(0, 0, width, height);
-      if (breath > 0) {
+      {
         // Choose once: a late first download must not replace visible fallback fire
         // with the animation's initially empty frame halfway through the breath.
-        nativeReady ??= !!art.current?.sample('fire', 0);
+        nativeReady ??= !!art.current?.sample('fire', flameStart);
         const next = nativeReady ? art.current?.sample('fire', flameTime + dt) : null;
         if (next) { sample = next; flameTime += dt; }
         const source = sample?.image ?? fallback;
         const sx = sample?.sx ?? 0, sy = sample?.sy ?? 0;
         const sw = sample?.spec.width ?? fallback.width, sh = sample?.spec.height ?? fallback.height;
-        accumulator += breath > .6 ? dt * 22 : 0;
+        accumulator += dt * 22;
         while (accumulator >= 1 && plumes.length < 64) {
           const seed = plumes.length;
           plumes.push({ born: time, angle: seed * 2.39996, spread: .45 + (seed % 13) / 18,
             spin: (seed % 2 ? 1 : -1) * .28, seed }); accumulator--;
         }
-        // Feather away the nozzle for the surrounding banks. The main jet retains
-        // its complete contour, while these curls overlap without rectangular seams.
+        // Use the mature flame curls immediately, feathering away the nozzle.
+        // Every bank spreads radially from the muzzle without a preliminary jet.
         const bankWidth = Math.ceil(sw * .72);
         if (bank.width !== bankWidth || bank.height !== sh) { bank.width = bankWidth; bank.height = sh; }
         bankPaint.clearRect(0, 0, bankWidth, sh);
@@ -111,17 +113,17 @@ export function DragonSmokeTransition({ origin, active = true, reveal, onCovered
           context.drawImage(bank, -bankWidth * scale / 2, -radius, bankWidth * scale, radius * 2);
           context.restore();
         }
-        // A widening cone projects out from the front-facing dragon's muzzle.
-        const length = 65 + ease(clamp(breath / 2.1, 0, 1)) * reach * 1.25;
-        const scale = length / sw;
+        const radius = 8 + ease(clamp(time / 2.4, 0, 1)) * reach * .32;
+        const scale = radius * 2 / sh;
         context.save(); context.translate(origin.x, origin.y);
-        context.rotate(Math.PI / 2 + Math.sin(time * 1.7) * .08);
-        context.drawImage(source, sx, sy, sw, sh, 0, -sh * scale / 2, length, sh * scale);
+        context.rotate(time * .24);
+        context.drawImage(bank, -bankWidth * scale / 2, -radius, bankWidth * scale, radius * 2);
         context.restore();
       }
       element.dataset.coverage = fill.toFixed(3);
       element.dataset.flameFrame = String(sample?.frame ?? -1);
       element.dataset.style = 'black-scarlet-breath';
+      element.dataset.spread = 'radial';
       if (time >= 3 && !covered) { covered = true; callbacks.current.onCovered(); }
       if (revealing.current) {
         revealTime += dt; element.style.opacity = String(1 - ease(clamp(revealTime / .85, 0, 1)));

@@ -39,14 +39,23 @@ export function HeavenlyJourney({ moving, navigate }: Props) {
     }
     setChapter(geometry.chapter);
   }, []);
-  useMotionValueEvent(scrollYProgress, 'change', renderPath);
+  const requestPath = useCallback((value: number) => {
+    if (marker.current) marker.current.dataset.requested = String(value);
+    if (!moving) renderPath(value);
+    window.dispatchEvent(new Event('journey-request'));
+  }, [moving, renderPath]);
+  useMotionValueEvent(scrollYProgress, 'change', requestPath);
   useEffect(() => {
     const node = panorama.current;
     if (!node) return;
-    const observer = new ResizeObserver(() => renderPath(scrollYProgress.get()));
+    const update = (event: Event) => renderPath((event as CustomEvent<number>).detail);
+    window.addEventListener('journey-progress', update);
+    const observer = new ResizeObserver(() => renderPath(progress.current));
     observer.observe(node);
-    renderPath(scrollYProgress.get());
-    return () => observer.disconnect();
+    renderPath(progress.current);
+    if (marker.current) marker.current.dataset.requested = String(scrollYProgress.get());
+    window.dispatchEvent(new Event('journey-request'));
+    return () => { observer.disconnect(); window.removeEventListener('journey-progress', update); };
   }, [renderPath, scrollYProgress]);
   useEffect(() => {
     const nav = navigation.current;
@@ -69,7 +78,7 @@ export function HeavenlyJourney({ moving, navigate }: Props) {
       </div>
       <div ref={panorama} className="journey-panorama">
         <div ref={bridge} className="journey-bridge-track" aria-hidden="true" />
-        <div ref={marker} className="journey-path-marker" data-guardian-path data-progress="0" aria-hidden="true" />
+        <div ref={marker} className="journey-path-marker" data-guardian-path data-progress="0" data-requested="0" data-phase="idle" aria-hidden="true" />
         <div ref={chapters} className="journey-chapter-track">
           {skyJourney.map((item, index) => <article key={item.place} className={`journey-chapter ${index % 2 ? 'journey-chapter-below' : 'journey-chapter-above'} ${chapter === index ? 'is-current' : ''}`} style={{ left: `calc(var(--chapter-step) * ${index})` }} aria-current={chapter === index ? 'step' : undefined}>
             <span className="journey-stem" aria-hidden="true" />
